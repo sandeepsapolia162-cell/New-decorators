@@ -1,3 +1,31 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>First admin setup | Sepolia Decorators</title><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/admin.css"></head><body class="admin-body"><main class="dash"><section class="panel"><p class="eyebrow">ONE-TIME SETUP</p><h1>Create your administrator</h1><p>Enter the SETUP_KEY secret you will add to Cloudflare Pages, then choose your email and a password of at least 12 characters.</p><form id="setupForm"><label>Setup key<input name="key" type="password" required></label><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" minlength="12" required></label><button class="btn btn-primary">Create administrator</button><p id="message" role="status"></p></form></section></main><script>
-document.getElementById('setupForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),m=document.getElementById('message');try{const r=await fetch('/api/setup',{method:'POST',headers:{'Content-Type':'application/json','x-setup-key':f.get('key')},body:JSON.stringify({email:f.get('email'),password:f.get('password')})});const d=await r.json();if(!r.ok)throw Error(d.error);m.textContent='Administrator created. You can now sign in.';setTimeout(()=>location.href='/admin',1000);}catch(x){m.textContent=x.message;}};
-</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>First admin setup | Sepolia Decorators</title>
+  <!-- Absolute URLs keep these styles working at the clean /admin/setup URL. -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/setup.css">
+</head>
+<body class="admin-body">
+  <main class="dash setup-page">
+    <section class="panel setup-panel">
+      <p class="eyebrow">ONE-TIME SETUP</p>
+      <h1>Create your administrator</h1>
+      <p>Enter the SETUP_KEY secret you will add to Cloudflare Pages, then choose your email and a password of at least 12 characters.</p>
+      <form id="setupForm" action="/api/setup" method="post">
+        <label>Setup key<input name="key" type="password" required></label>
+        <label>Email<input name="email" type="email" required></label>
+        <label>Password<input name="password" type="password" minlength="12" required></label>
+        <button class="btn btn-primary" type="submit">Create administrator</button>
+        <p id="message" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+  <!-- External same-origin script works with a script-src 'self' CSP. -->
+  <script src="/js/setup.js" defer></script>
+</body>
+</html>

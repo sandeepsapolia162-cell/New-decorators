@@ -1,0 +1,54 @@
+/* Keep the first-admin form readable without JavaScript or the other stylesheets. */
+body.admin-body {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  color: #1a1614;
+  background: #f4f0e6;
+}
+
+.setup-page {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  max-width: 720px;
+  margin: 48px auto;
+  padding: 0 18px;
+}
+
+.setup-panel {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  padding: 28px;
+  border: 1px solid #e8e2d5;
+  background: #fff;
+  color: #1a1614;
+}
+
+.setup-panel h1,
+.setup-panel p,
+.setup-panel label,
+.setup-panel button {
+  visibility: visible;
+  opacity: 1;
+}
+
+.setup-panel label {
+  display: block;
+  margin: 14px 0;
+}
+
+.setup-panel input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  font: inherit;
+}
+
+.setup-panel button {
+  margin-top: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+}
