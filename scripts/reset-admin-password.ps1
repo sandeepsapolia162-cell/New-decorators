@@ -1,5 +1,10 @@
 # Generates a one-time SQL reset file. It never writes your plain password to disk.
 $ErrorActionPreference = 'Stop'
+$policyPath = Join-Path (Get-Location) 'functions/password-policy.js'
+if (-not (Test-Path -LiteralPath $policyPath)) { throw "Cannot find shared password policy at $policyPath. Run this script from the project folder." }
+$policyText = Get-Content -LiteralPath $policyPath -Raw
+if ($policyText -notmatch 'PBKDF2_ITERATIONS\s*=\s*(\d+)') { throw 'Could not read PBKDF2_ITERATIONS from functions/password-policy.js.' }
+$iterations = [int]$Matches[1]
 $email = Read-Host 'Admin email address'
 $secure = Read-Host 'New password (12 or more characters)' -AsSecureString
 $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
@@ -11,11 +16,11 @@ $saltBytes = [byte[]]::new(24)
 $salt = [Convert]::ToHexString($saltBytes).ToLowerInvariant()
 $passwordBytes = [Text.Encoding]::UTF8.GetBytes($password)
 $saltTextBytes = [Text.Encoding]::UTF8.GetBytes($salt)
-$derive = [System.Security.Cryptography.Rfc2898DeriveBytes]::new($passwordBytes, $saltTextBytes, 310000, [System.Security.Cryptography.HashAlgorithmName]::SHA256)
+$derive = [System.Security.Cryptography.Rfc2898DeriveBytes]::new($passwordBytes, $saltTextBytes, $iterations, [System.Security.Cryptography.HashAlgorithmName]::SHA256)
 try { $hash = [Convert]::ToHexString($derive.GetBytes(32)).ToLowerInvariant() }
 finally { $derive.Dispose(); [Array]::Clear($passwordBytes, 0, $passwordBytes.Length); $password = $null }
 $safeEmail = $email.Replace("'", "''")
-$sql = "UPDATE users SET password_hash='$hash', salt='$salt' WHERE email='$safeEmail' COLLATE NOCASE;`nDELETE FROM sessions WHERE user_id=(SELECT id FROM users WHERE email='$safeEmail' COLLATE NOCASE);`n"
+$sql = "UPDATE users SET password_hash='$hash', salt='$salt', password_iterations=$iterations WHERE email='$safeEmail' COLLATE NOCASE;`nDELETE FROM sessions WHERE user_id=(SELECT id FROM users WHERE email='$safeEmail' COLLATE NOCASE);`n"
 $output = Join-Path (Get-Location) 'reset-admin.sql'
 [IO.File]::WriteAllText($output, $sql, [Text.UTF8Encoding]::new($false))
 Write-Host "Created reset-admin.sql for $email. Run the Wrangler command in README, then delete this file."

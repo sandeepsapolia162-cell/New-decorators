@@ -57,6 +57,14 @@ If it says **“Build output directory not found”**, edit the Pages project bu
    npx.cmd wrangler d1 execute sepolia-decorators --remote --file=schema.sql
    ```
 
+   If you already ran an older `schema.sql` before the first-admin setup failed, run this one-time update as well (there is no admin account to preserve):
+
+   ```powershell
+   npx.cmd wrangler d1 execute sepolia-decorators --remote --file=migrations/0002-password-iterations.sql
+   ```
+
+   Do not run that migration twice; SQLite will report that `password_iterations` already exists if the update has already been applied.
+
    The first time, Wrangler may ask to install; type `y` and press **Enter**. If PowerShell says **“npx is not recognized”**, close PowerShell, install Node.js LTS, reopen PowerShell, and repeat. If it says **“Authentication error”**, run `npx.cmd wrangler login`, approve the browser page, then repeat the database command. If it says **“Database not found”**, check the spelling and confirm you created the database in this Cloudflare account.
 
 7. Bind it to Pages: open **Workers & Pages → your Pages project → Settings → Functions → D1 database bindings → Add binding**. Enter `DB` as the variable name, select `sepolia-decorators`, click **Save**, then redeploy if Cloudflare asks.
@@ -181,6 +189,7 @@ The script writes only the salted password hash to the temporary SQL file, not t
 - One free D1 database currently has a **500 MB** size limit. The **5 GB** allowance is total D1 storage across the account, not one free database. Free D1 also has daily row-read and row-write limits. When a limit is exceeded, queries can fail until the daily reset. Check **D1 → Metrics** occasionally.
 - Existing static pictures do not count against D1 storage. New uploads count toward the single database's 500 MB. The dashboard shows used bytes against that limit.
 - Videos are capped at 10 MB. Range requests retrieve only the D1 chunks needed for the requested part of a video. D1 is not a specialist video service; avoid building a large video archive there.
+- Passwords use PBKDF2-SHA-256 with a unique random salt and **100,000 iterations**. This matches Cloudflare Workers WebCrypto's supported maximum. A higher count makes each password guess more expensive for an attacker, but Workers currently rejects counts over 100,000. 100,000 therefore gives less resistance per guess than commonly recommended higher settings. A long password (at least 12 characters; a longer unique passphrase is better) and login throttling help compensate. The Workers Free CPU limit is 10 ms per request. I cannot confirm that PBKDF2 at 100,000 iterations stays under that limit in production; Cloudflare says heavier authentication work can take 10–20 ms, so the check is required on your deployed preview. Watch **Workers & Pages → your project → Metrics** for CPU-limit errors (Error 1102). If those appear during login, the requested PBKDF2 setting conflicts with the free CPU limit; the closest free-safe solution would be using a hosted identity provider, which would change the chosen stack, or moving auth to a plan with a higher CPU allowance. [Workers limits](https://developers.cloudflare.com/workers/platform/limits/) · [Workers Web Crypto](https://developers.cloudflare.com/workers/runtime-apis/web-crypto/)
 - ZIP creation and restore happen in the browser and can use considerable memory for a very large library. Save monthly backups to your computer and keep the repository copy of `images/`.
 - Cloudflare currently serves Pages static files without an inactivity pause, but no company can guarantee that a free plan will stay free forever. Quotas and plan terms can change. R2 is not used because enabling it may require a payment method.
 
