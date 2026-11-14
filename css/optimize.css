@@ -1,0 +1,27 @@
+/* ==========================================
+   PERFORMANCE & GPU ACCELERATION
+   ========================================== */
+
+/* Enable native buttery smooth scrolling */
+html {
+    scroll-behavior: smooth !important;
+}
+
+/* Force hardware (GPU) acceleration for animations */
+.fade-up, .portfolio-item, .service-card {
+    /* translate3d uses the GPU instead of CPU */
+    transform: translate3d(0, 40px, 0) !important; 
+    
+    /* Removes constant memory drain from previous code */
+    will-change: auto !important; 
+    
+    /* Prevents flickering during animation */
+    backface-visibility: hidden !important; 
+    perspective: 1000px !important;
+}
+
+/* Final visible state */
+.fade-up.is-visible, .portfolio-item.is-visible, .service-card.is-visible {
+    transform: translate3d(0, 0, 0) !important;
+}
+

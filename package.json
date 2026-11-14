@@ -1,0 +1,12 @@
+{
+  "name": "sepoliadecorators",
+  "version": "1.0.0",
+  "description": "Static portfolio with free Express backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Sepolia Decorators",
+  "license": "MIT",
+  "dependencies": {}
+}

@@ -1,0 +1,1050 @@
+/* ==========================================================================
+   SEPOLIA DECORATORS & CATERERS - Premium Cinematic Theme (Complete)
+   ========================================================================== */
+
+   :root {
+    --clr-light: #fdfbf7;         
+    --clr-section-alt: #f4f0e6;   
+    --clr-dark: #1a1614;          
+    --clr-dark-lighter: #3c342f;  
+    --clr-accent: #c5a880;        
+    --clr-accent-hover: #ad8f65;  
+    --clr-text-muted: #6b615a;    
+    
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+    
+    --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --section-pad: 120px 5%;
+}
+
+/* Base Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+    font-family: var(--font-body);
+    background-color: var(--clr-light);
+    color: var(--clr-dark);
+    line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 500; line-height: 1.1; }
+a { text-decoration: none; color: inherit; transition: var(--transition); }
+ul { list-style: none; }
+img { max-width: 100%; display: block; object-fit: cover; }
+
+/* Utilities */
+.text-center { text-align: center; }
+.text-accent { color: var(--clr-accent); }
+.bg-alt { background-color: var(--clr-section-alt); }
+.bg-dark { background-color: var(--clr-dark); color: var(--clr-light); }
+.section-title { font-size: 3rem; margin-bottom: 0.5rem; color: var(--clr-dark); }
+.section-subtitle { font-size: 0.9rem; color: var(--clr-accent); margin-bottom: 3.5rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 600; font-family: var(--font-body); }
+
+/* ==========================================================================
+   ELEGANT BUTTONS
+   ========================================================================== */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 35px; font-family: var(--font-body); font-size: 0.8rem;
+    font-weight: 500; text-transform: uppercase; letter-spacing: 2px;
+    cursor: pointer; transition: var(--transition); border-radius: 2px; text-align: center;
+}
+.btn-primary { background-color: var(--clr-accent); color: #fff; border: 1px solid var(--clr-accent); }
+.btn-primary:hover { background-color: var(--clr-accent-hover); border-color: var(--clr-accent-hover); transform: translateY(-2px); }
+.btn-secondary { background-color: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.5); }
+.btn-secondary:hover { background-color: rgba(255, 255, 255, 0.1); border-color: #fff; transform: translateY(-2px); }
+.btn-dark { color: var(--clr-light); background: var(--clr-dark); border: 1px solid var(--clr-dark); }
+.btn-dark:hover { background: transparent; color: var(--clr-dark); }
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+.navbar {
+    position: fixed; top: 0; left: 0; width: 100%; padding: 30px 5%;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 1000; transition: all 0.5s ease;
+}
+.navbar .logo, .navbar .nav-links a { color: #fff; }
+.navbar .hamburger span { background: #fff; }
+.navbar.scrolled {
+    background: rgba(253, 251, 247, 0.98); backdrop-filter: blur(15px); 
+    padding: 20px 5%; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+}
+.navbar.scrolled .logo, .navbar.scrolled .nav-links a { color: var(--clr-dark); }
+.navbar.scrolled .hamburger span { background: var(--clr-dark); }
+.logo { font-size: 1.8rem; display: flex; flex-direction: column; letter-spacing: 1px; }
+.logo span { font-family: var(--font-body); font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase; color: var(--clr-accent); font-weight: 500; margin-top: 2px; }
+.nav-links { display: flex; gap: 35px; }
+.nav-links a { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; position: relative; font-weight: 500; }
+.nav-links a::after { content: ''; position: absolute; width: 0; height: 1px; bottom: -6px; left: 0; background-color: var(--clr-accent); transition: width 0.4s ease; }
+.nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+.hamburger { display: none; cursor: pointer; flex-direction: column; gap: 6px; }
+.hamburger span { width: 30px; height: 1px; transition: var(--transition); }
+
+/* ==========================================================================
+   SUBPAGE HEADERS (Services, About, Portfolio, Contact)
+   ========================================================================== */
+.page-header {
+    height: 45vh; min-height: 350px;
+    background: linear-gradient(180deg, rgba(26, 22, 20, 0.9), rgba(26, 22, 20, 0.95));
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 100px 5% 0; border-bottom: 1px solid #3c342f;
+}
+.page-header .hero-title, .page-header .hero-desc { color: #fff; }
+
+/* ==========================================================================
+   HOMEPAGE HERO SECTION
+   ========================================================================== */
+.hero {
+    position: relative; height: 100vh; min-height: 700px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 0 5%;
+}
+.hero-image-bg { position: absolute; inset: 0; z-index: 1; overflow: hidden; background: #000; }
+.hero-image-bg img {
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.9;
+    animation: gentlePan 25s ease-in-out infinite alternate;
+}
+@keyframes gentlePan { 0% { transform: scale(1.02); } 100% { transform: scale(1.08); } }
+.hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(20, 15, 10, 0.2) 0%, rgba(20, 15, 10, 0.55) 50%, rgba(20, 15, 10, 0.75) 100%);
+    z-index: 2;
+}
+.hero-content { position: relative; z-index: 3; max-width: 900px; margin-top: 40px; color: #fff; }
+.hero-eyebrow { font-size: 0.85rem; letter-spacing: 4px; color: #e6d3ba; text-transform: uppercase; margin-bottom: 25px; display: block; font-weight: 500; }
+.hero-title { font-size: 6.5rem; margin-bottom: 10px; line-height: 1; letter-spacing: 0.02em; }
+.hero-subtitle { font-size: 2.2rem; font-weight: 400; font-style: italic; margin-bottom: 30px; color: #e6d3ba; }
+.hero-desc { font-size: 1.1rem; color: rgba(255,255,255,0.85); margin-bottom: 45px; font-weight: 300; letter-spacing: 0.5px; max-width: 600px; margin-left: auto; margin-right: auto; }
+.hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.scroll-indicator {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 3; color: rgba(255,255,255,0.6); font-family: var(--font-body);
+    font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.scroll-arrow { animation: bounce 2s infinite; font-size: 1.2rem; }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+
+/* ==========================================================================
+   SECTIONS & SERVICES CARDS
+   ========================================================================== */
+section { padding: var(--section-pad); }
+.intro-section { text-align: center; max-width: 900px; margin: 0 auto; }
+.intro-text { font-size: 2.2rem; font-style: italic; margin-bottom: 40px; color: var(--clr-dark); line-height: 1.4; }
+.services-preview { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.service-card { background: #ffffff; padding: 60px 50px; border: 1px solid #eae5da; transition: var(--transition); position: relative; }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--clr-accent); transform: scaleX(0); transition: transform 0.5s ease; transform-origin: left; }
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.03); transform: translateY(-3px); }
+.service-card h3 { font-size: 2.2rem; margin-bottom: 25px; }
+.service-card ul { margin-bottom: 35px; color: var(--clr-text-muted); font-size: 1.05rem; }
+.service-card li { margin-bottom: 12px; border-bottom: 1px solid #f4f0e6; padding-bottom: 12px; }
+
+
+
+.filter-btn.active::after {
+    transform: scaleX(1);
+}
+/* ==========================================================================
+   LIGHTBOX ZOOM & FULLSCREEN VIEWER
+   ========================================================================== */
+.lightbox {
+    position: fixed; inset: 0; background: rgba(26, 22, 20, 0.96); z-index: 99999;
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s ease;
+}
+.lightbox.active { display: flex; opacity: 1; }
+.lightbox-img {
+    max-height: 85vh; max-width: 90vw; object-fit: contain;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 4px solid #fff; border-radius: 4px;
+}
+.lightbox-close, .lightbox-prev, .lightbox-next {
+    position: absolute; background: none; border: none; color: #fff;
+    font-size: 2.5rem; cursor: pointer; transition: var(--transition); z-index: 100000;
+}
+.lightbox-close { top: 25px; right: 35px; }
+.lightbox-prev { left: 30px; top: 50%; transform: translateY(-50%); }
+.lightbox-next { right: 30px; top: 50%; transform: translateY(-50%); }
+.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { color: var(--clr-accent); }
+
+/* ==========================================================================
+   CONTACT FORM & LAYOUT FIX
+   ========================================================================== */
+.contact-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; }
+.contact-info { padding: 50px; border-radius: 4px; }
+.form-group { margin-bottom: 25px; }
+.form-control {
+    width: 100%; padding: 15px 0; background: transparent; border: none; border-bottom: 1px solid #dcd5c6;
+    font-family: var(--font-body); font-size: 1rem; transition: var(--transition); color: var(--clr-dark);
+}
+.form-control:focus { outline: none; border-bottom-color: var(--clr-accent); }
+textarea.form-control { resize: vertical; min-height: 120px; }
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.footer { background: var(--clr-dark); color: var(--clr-light); padding: 80px 5% 30px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 40px; margin-bottom: 60px; }
+.footer-title { font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 20px; color: var(--clr-accent); }
+.footer-links li { margin-bottom: 12px; font-size: 0.9rem; }
+.footer-links a:hover { color: var(--clr-accent); padding-left: 5px; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; text-align: center; font-size: 0.8rem; color: #887f78; }
+
+/* ==========================================================================
+   ANIMATIONS & RESPONSIVE LAYOUT
+   ========================================================================== */
+.fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 1024px) { 
+    .hero-title { font-size: 5rem; } 
+    .portfolio-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important; }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+        background: var(--clr-light); flex-direction: column; justify-content: center; align-items: center;
+        transition: right 0.4s ease; box-shadow: -5px 0 15px rgba(0,0,0,0.05);
+    }
+    .nav-links.active { right: 0; }
+    .nav-links a { color: var(--clr-dark) !important; font-size: 1.2rem; }
+    .hamburger { display: flex; z-index: 1001; }
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--clr-dark); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--clr-dark); }
+    
+    .hero-title { font-size: 3.5rem; }
+    .hero-subtitle { font-size: 1.5rem; }
+    .hero-buttons { flex-direction: column; width: 100%; max-width: 300px; margin: 0 auto; }
+    .btn { width: 100%; }
+    
+    .services-preview, .contact-container, .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+    
+    .lightbox-prev, .lightbox-next { display: none; } /* On mobile, users will use screen taps */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+/* ==========================================
+   SMOOTH SCROLL ANIMATIONS
+   ========================================== */
+/* 1. Initial State: Hidden and pushed down 40px */
+.fade-up, .portfolio-item, .service-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change: opacity, transform;
+}
+
+/* 2. Final State: Fully visible and in original position */
+.fade-up.is-visible, .portfolio-item.is-visible, .service-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+/* ==========================================
+   HEADER ANTI-JITTER FIX
+   ========================================== */
+   header, .header, .navbar, #header {
+    /* 1. Stop animating 'all' properties, only animate what is needed */
+    transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease !important;
+    
+    /* 2. Force hardware (GPU) acceleration */
+    transform: translateZ(0) !important; 
+    -webkit-transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    
+    /* 3. Tell the browser what will change in advance */
+    will-change: background-color, padding !important;
+}
+/* ==========================================
+   PREMIUM MOBILE MENU (ANIMATED & STYLISH)
+   ========================================== */
+   @media (max-width: 991px) {
+    /* 1. The Main Menu Box Sliding Animation */
+    /* 1. The Main Menu Box Sliding Animation */
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important; 
+        left: auto !important;   
+        
+        /* Starts completely off-screen to the right */
+        transform: translateX(100%) !important; 
+        
+        width: 75% !important; 
+        max-width: 320px !important; 
+        height: 100vh !important;    
+        background-color: #fbf9f6 !important; 
+        
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important; 
+        align-items: flex-start !important;
+        
+        /* Added box-shadow to the transition so it fades nicely */
+        transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), box-shadow 0.6s ease !important;
+        
+        padding: 120px 40px 40px 40px !important; 
+        margin: 0 !important;
+        box-sizing: border-box !important; 
+        
+        /* THE FIX: Turns off the shadow when the menu is hidden */
+        box-shadow: none !important; 
+        z-index: 1000 !important;
+    }
+
+    /* Slides perfectly into view when clicking the hamburger */
+    .nav-links.active {
+        transform: translateX(0) !important;
+        /* THE FIX: Turns the shadow back on ONLY when the menu is open */
+        box-shadow: -15px 0 50px rgba(0,0,0,0.5) !important; 
+    }
+
+    /* Slides perfectly into view when clicking the hamburger */
+    .nav-links.active {
+        transform: translateX(0) !important;
+    }
+
+    /* 2. Menu Links - Initial Hidden State */
+    .nav-links li {
+        margin: 5px 0 !important; 
+        list-style: none !important;
+        width: 100% !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05) !important; 
+        padding-bottom: 8px !important; 
+        
+        /* Prepares the text for the fade-in animation */
+        opacity: 0;
+        transform: translateX(20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 3. Staggered Text Fade-In Animation */
+    .nav-links.active li {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    
+    /* Timers that make the links appear one after the other */
+    .nav-links.active li:nth-child(1) { transition-delay: 0.2s; }
+    .nav-links.active li:nth-child(2) { transition-delay: 0.3s; }
+    .nav-links.active li:nth-child(3) { transition-delay: 0.4s; }
+    .nav-links.active li:nth-child(4) { transition-delay: 0.5s; }
+    .nav-links.active li:nth-child(5) { transition-delay: 0.6s; }
+
+    /* 4. Beautiful Typography */
+    .nav-links a {
+        color: #1a1a1a !important; 
+        font-size: 1.1rem !important; 
+        font-family: 'Cormorant Garamond', serif !important; 
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important; 
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        display: block !important;
+    }
+
+    .hamburger {
+        position: relative;
+        z-index: 1001 !important;
+    }
+
+    /* 5. Dark Background Overlay */
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+        z-index: 999;
+    }
+
+    body.menu-open::after {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ==========================================
+   PREMIUM SOCIAL LINKS (CONTACT PAGE)
+   ========================================== */
+   .premium-social-section {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.social-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+/* The elegant outline button style */
+.social-pill {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 25px;
+    background-color: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.15); /* Soft, subtle border */
+    color: #1a1a1a;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 320px;
+}
+
+/* Smooth hover effect */
+.social-pill:hover {
+    background-color: #1a1a1a; /* Fills with dark grey */
+    color: #fbf9f6; /* Text and icon turn cream */
+    border-color: #1a1a1a;
+}
+/* ==========================================
+   SYMMETRICAL SOCIAL BUTTONS
+   ========================================== */
+   .social-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Perfect, even space between buttons */
+    align-items: flex-start; 
+}
+
+/* Master class that forces both buttons to be identical */
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center; 
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 15px 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    
+    width: 100%;
+    max-width: 380px; 
+    box-sizing: border-box;
+    border: none;
+    transition: opacity 0.3s ease;
+    
+    /* ADDED: This curves the corners of the buttons */
+    border-radius: 12px; 
+}
+
+.social-icon {
+    margin-right: 12px;
+}
+
+.social-btn:hover {
+    opacity: 0.9;
+}
+
+/* Individual Colors */
+.instagram-btn {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.youtube-btn {
+    background: #ff4d4d; /* Premium, rich YouTube Red */
+}
+/* ==========================================
+   FLOATING WHATSAPP BUTTON
+   ========================================== */
+   .whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px; /* Placed on the right to avoid your left-side back arrow */
+    background-color: #25d366; /* Official WhatsApp Green */
+    color: #FFF;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Adjust sizes for mobile screens */
+@media (max-width: 768px) {
+    .whatsapp-float {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .whatsapp-float svg {
+        width: 26px;
+        height: 26px;
+    }
+}
+/* ==========================================
+   PAGE TRANSITION ANIMATION
+   ========================================== */
+   body {
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+}
+body.page-loaded {
+    opacity: 1;
+}
+
+/* ==========================================
+   UNIVERSAL BACK ARROW (Desktop Only)
+   ========================================== */
+.sepolia-universal-back-arrow {
+    display: none; /* Hidden on mobile */
+    position: fixed;
+    top: 25px;
+    left: 4%;
+    z-index: 1005;
+    background: rgba(26, 22, 20, 0.7);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(197, 168, 128, 0.3);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+/* Properly style the SVG so it looks like an arrow, not a dash */
+.sepolia-universal-back-arrow svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--clr-accent);
+    stroke-width: 2;
+    fill: none;
+    transition: transform 0.3s ease, stroke 0.3s ease;
+}
+.sepolia-universal-back-arrow:hover {
+    background: var(--clr-accent);
+    box-shadow: 0 5px 15px rgba(197, 168, 128, 0.4);
+}
+.sepolia-universal-back-arrow:hover svg {
+    stroke: #fff;
+    transform: translateX(-4px); /* Arrow pointing back animation */
+}
+.sepolia-universal-back-arrow.sepolia-nav-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+@media (min-width: 1025px) {
+    .sepolia-universal-back-arrow { display: flex; }
+    .navbar .logo { margin-left: 60px; transition: margin 0.3s ease; }
+}
+
+/* ==========================================
+   PORTFOLIO LIGHTBOX DOWNLOAD BUTTON
+   ========================================== */
+.lightbox-download {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--clr-accent);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: none;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100000;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+.lightbox-download:hover {
+    background: #fff;
+    color: var(--clr-dark);
+    transform: translateX(-50%) translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+/* Ensure Lightbox Navigation Buttons are beautiful */
+.lightbox-prev, .lightbox-next {
+    background: rgba(26, 22, 20, 0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-prev:hover, .lightbox-next:hover {
+    background: var(--clr-accent);
+    border-color: var(--clr-accent);
+    color: #fff;
+}
+.portfolio-grid {
+    display: grid !important;
+    /* This strictly forces exactly 3 images per row on computers */
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap: 25px !important;
+    width: 100% !important;
+    min-height: 200px !important; 
+    margin-top: 30px;
+}
+
+/* Make it 2 in a row on Tablets */
+@media (max-width: 991px) {
+    .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Make it 1 in a row on Mobile Phones */
+@media (max-width: 768px) {
+    .portfolio-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+/* ==========================================
+   1. FIX HUGE WHITE SPACE UNDER HEADER
+   ========================================== */
+   .page-header + section {
+    padding-top: 40px !important; 
+}
+
+/* ==========================================
+   2. HIDE TEXT/OVERLAYS UNDER IMAGES
+   ========================================== */
+.portfolio-overlay, .portfolio-category {
+    display: none !important;
+}
+
+/* ==========================================
+   3. FLAWLESS STICKY MENU (DESKTOP & MOBILE)
+   ========================================== */
+/* Fixes the sticky menu without letting the page sway side-to-side */
+html, body, section {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+}
+
+
+/* Desktop Animated Underline & Text Settings */
+.filter-btn { 
+    background: none; 
+    border: none; 
+    font-family: var(--font-body); 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    cursor: pointer; 
+    color: var(--clr-text-muted); 
+    font-weight: 600;
+    position: relative; 
+    padding-bottom: 6px;
+    transition: color 0.3s ease;
+    flex-shrink: 0; /* CRITICAL: Prevents buttons from squishing on mobile */
+}
+
+.filter-btn:hover, .filter-btn.active { 
+    color: var(--clr-accent); 
+}
+
+.filter-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--clr-accent);
+    transform: scaleX(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.filter-btn.active::after {
+    transform: scaleX(1);
+}
+
+/* ==========================================
+   4. SLEEK MOBILE SWIPE MENU
+   ========================================== */
+@media (max-width: 991px) {
+    .portfolio-filters {
+        top: 65px !important; /* OVERRIDES desktop height properly */
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: flex-start !important;
+        padding: 15px 20px !important;
+        gap: 20px !important;
+        
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; 
+        -ms-overflow-style: none;
+    }
+    .portfolio-filters::-webkit-scrollbar {
+        display: none; 
+    }
+    .filter-btn {
+        white-space: nowrap !important; 
+        font-size: 0.85rem !important;
+    }
+    /* Adds breathing room to the very end of the scrollable mobile menu */
+    .portfolio-filters::after {
+        content: '';
+        padding-right: 20px;
+    }
+}
+
+/* ==========================================
+   5. BULLETPROOF MOBILE DOWNLOAD BUTTON
+   ========================================== */
+@media (max-width: 768px) {
+    .lightbox-download {
+        position: fixed !important; 
+        bottom: 90px !important; 
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 85% !important; 
+        justify-content: center !important;
+        font-size: 1rem !important;
+        padding: 16px !important;
+        z-index: 9999999 !important; 
+    }
+    .lightbox-img {
+        max-height: 65vh !important; 
+        margin-top: -60px !important;
+    }
+}
+/* ==========================================
+   1. PORTFOLIO PAGE GAP FIX
+   ========================================== */
+/* Kills the massive 120px white space above the menu */
+.page-header + section {
+    padding-top: 30px !important; 
+}
+
+/* ==========================================
+   2. HIDE TEXT/OVERLAYS UNDER IMAGES
+   ========================================== */
+.portfolio-overlay, .portfolio-category {
+    display: none !important;
+}
+
+/* ==========================================
+   3. FLAWLESS STICKY MENU (DESKTOP)
+   ========================================== */
+/* Force the browser to allow sticky behavior */
+html, body, section {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+}
+
+.portfolio-filters { 
+    display: flex !important; 
+    justify-content: center !important; 
+    gap: 30px !important; 
+    margin-bottom: 40px !important; 
+    flex-wrap: wrap !important; 
+    
+    position: -webkit-sticky !important; 
+    position: sticky !important;
+    /* Pushed down to 95px so it NEVER hides behind the desktop navbar */
+    top: 95px !important; 
+    z-index: 990 !important; 
+    
+    background: rgba(253, 251, 247, 0.98) !important;
+    backdrop-filter: blur(10px) !important; 
+    padding: 20px 0 !important;
+    
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: 0 10px 20px -10px rgba(0,0,0,0.08) !important; 
+    width: 100% !important;
+}
+
+/* Button Styling & Animated Line */
+.filter-btn { 
+    background: none !important; 
+    border: none !important; 
+    font-family: var(--font-body) !important; 
+    text-transform: uppercase !important; 
+    letter-spacing: 1px !important; 
+    cursor: pointer !important; 
+    color: var(--clr-text-muted) !important; 
+    font-weight: 600 !important;
+    position: relative !important; 
+    padding-bottom: 6px !important;
+    transition: color 0.3s ease !important;
+    /* This physically stops the text from squishing on mobile */
+    flex-shrink: 0 !important; 
+}
+
+.filter-btn:hover, .filter-btn.active { 
+    color: var(--clr-accent) !important; 
+}
+
+.filter-btn::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 2px !important;
+    background-color: var(--clr-accent) !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.filter-btn.active::after {
+    transform: scaleX(1) !important;
+}
+
+/* ==========================================
+   4. SLEEK MOBILE SWIPE MENU
+   ========================================== */
+@media (max-width: 1000px) {
+    .portfolio-filters {
+        /* Pushed down to 85px to clear the taller mobile navbar */
+        top: 95px !important; 
+        
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: flex-start !important;
+        padding: 15px 18px !important;
+        gap: 20px !important;
+        
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important; 
+        -ms-overflow-style: none !important;
+    }
+    
+    .portfolio-filters::-webkit-scrollbar {
+        display: none !important; 
+    }
+    
+    .filter-btn {
+        /* Forces buttons into a single line */
+        white-space: nowrap !important; 
+        font-size: 0.85rem !important;
+    }
+    
+    /* Adds a little empty space at the end of the swipe area */
+    .portfolio-filters::after {
+        content: '';
+        padding-right: 20px;
+    }
+}
+
+/* ==========================================
+   5. MOBILE DOWNLOAD BUTTON
+   ========================================== */
+@media (max-width: 768px) {
+    .lightbox-download {
+        position: fixed !important; 
+        bottom: 90px !important; 
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 85% !important; 
+        justify-content: center !important;
+        font-size: 1rem !important;
+        padding: 16px !important;
+        z-index: 9999999 !important; 
+    }
+    .lightbox-img {
+        max-height: 100vh !important; 
+        margin-top: -60px !important;
+    }
+}
+@media (max-width: 1000px) {
+    .portfolio-filters::before,
+    .portfolio-filters::after {
+        display: none !important;
+        content: none !important;
+    }
+}
+/* ==========================================
+   BULLETPROOF FULL-WIDTH SUB-MENU BOX
+   ========================================== */
+   .portfolio-filters { 
+    /* 1. STRETCHES BOX TO TOUCH LEFT & RIGHT CORNERS */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    
+    /* 2. CONTROLS THE HEIGHT OF THE BOX */
+    padding-top: 20px !important;    /* Change to 40px to make top taller */
+    padding-bottom: 20px !important; /* Change to 40px to make bottom taller */
+    
+    /* 3. CONTROLS SPACE BELOW THE BOX */
+    margin-bottom: 40px !important;  /* Change to push images further down */
+    
+    /* 4. ALIGNS THE BUTTONS INSIDE THE BOX */
+    display: flex !important; 
+    justify-content: center !important; 
+    gap: 20px !important; /* Change this to space buttons further apart */
+    flex-wrap: wrap !important;
+    
+    /* 5. BOX COLOR (Change 'transparent' to a color like #f4f0e6 if you want to see the box) */
+    background-color: white !important; 
+}
+/* ==========================================
+   LIKED DESIGNS FEATURE & BUG FIXES
+   ========================================== */
+
+/* 1. Portfolio Card Heart Button */
+.like-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(253, 251, 247, 0.85);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.2rem;
+    color: var(--clr-text-muted);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease, background 0.3s ease;
+}
+.like-btn:hover { transform: scale(1.1); }
+.like-btn.liked { color: #ff4d4d; background: #fff; }
+.like-btn.liked::after { content: '♥'; position: absolute; }
+.like-btn:not(.liked)::after { content: '♡'; position: absolute; }
+
+/* 2. Navigation Badge */
+.like-badge {
+    background: var(--clr-accent);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 12px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-weight: 700;
+}
+
+/* 3. Lightbox Enhancements & Heart */
+.lightbox-like-btn {
+    position: absolute;
+    top: 25px;
+    left: 35px; /* Opposite the close button */
+    background: rgba(26, 22, 20, 0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 100000;
+}
+.lightbox-like-btn:hover { transform: scale(1.1); }
+.lightbox-like-btn.liked { color: #ff4d4d; }
+.lightbox-like-btn.liked::after { content: '♥'; }
+.lightbox-like-btn:not(.liked)::after { content: '♡'; }
+
+/* 4. Lightbox Action Container (WhatsApp & Save Stacking) */
+.lightbox-action-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100000;
+    width: 90%;
+    max-width: 350px;
+}
+/* Override old static positioning so they flex perfectly inside the new wrapper */
+.lightbox-action-container .lightbox-download,
+.lightbox-action-container .lightbox-whatsapp {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+}
+
+.lightbox-whatsapp {
+    background: #25d366;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 30px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-decoration: none;
+    border: none;
+}
+.lightbox-whatsapp:hover {
+    background: #128c7e;
+    transform: translateY(-5px) !important;
+}
+
+@media (max-width: 768px) {
+    .lightbox-like-btn { top: 15px; left: 15px; width: 45px; height: 45px; font-size: 1.5rem; }
+    .lightbox-action-container { bottom: 20px; width: 85%; }
+    .lightbox-img { margin-top: -120px !important; max-height: 55vh !important; }
+}
+
+/* 5. FIX: Mobile Menu Jitter & Fluency Improvement */
+@media (max-width: 991px) {
+    .nav-links {
+        /* Hardware acceleration to kill scroll stutter */
+        will-change: transform;
+        backface-visibility: hidden;
+    }
+}
+
