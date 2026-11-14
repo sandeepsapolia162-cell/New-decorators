@@ -3,10 +3,34 @@ const $=s=>document.querySelector(s), esc=s=>{const e=document.createElement('sp
 let media=[],categories=[],role='editor',touchCard=null,touchTimer=null,touchDrag=false,cropState=null;
 let listMode=false;
 const say=t=>$('#notice').textContent=t;
-async function api(url,options={}){const r=await fetch(url,options);let data={};try{data=await r.json();}catch{}if(!r.ok)throw Error(data.error||`Request failed (${r.status})`);return data;}
+const showStartupError=message=>{const panel=$('#startupError'),text=$('#startupErrorText');if(panel){if(text)text.textContent=message;panel.hidden=false;}};
+const hideStartupError=()=>{const panel=$('#startupError');if(panel)panel.hidden=true;};
+// If a later top-level dashboard statement fails, preserve an actionable message.
+window.addEventListener('error',event=>showStartupError(`Dashboard script error: ${event.message||'A script could not run.'} Check that /js/admin.js and /css/admin.css load successfully.`));
+window.addEventListener('unhandledrejection',event=>showStartupError(`Dashboard startup failed: ${event.reason?.message||String(event.reason||'Unknown error')}`));
+async function api(url,options={}){const r=await fetch(url,options);let data={};try{data=await r.json();}catch{}if(!r.ok){const error=Error(data.error||`Request failed (${r.status})`);error.status=r.status;throw error;}return data;}
 const post=(url,data,method='POST')=>api(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
 function xhrUpload(url,blob,headers,onProgress=()=>{}){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open('POST',url);for(const [k,v]of Object.entries(headers))x.setRequestHeader(k,v);x.upload.onprogress=e=>{if(e.lengthComputable)onProgress(Math.round(e.loaded/e.total*100));};x.onload=()=>{let d={};try{d=JSON.parse(x.responseText);}catch{}x.status>=200&&x.status<300?resolve(d):reject(Error(d.error||`Upload failed (${x.status})`));};x.onerror=()=>reject(Error('Network error during upload'));x.send(blob);});}
-async function load(){try{const [session,summary]=await Promise.all([api('/api/admin/session'),api('/api/admin/summary')]);role=session.user.role;$('#login').hidden=true;$('#app').hidden=false;$('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);$('#teamPanel').hidden=role!=='admin';$('#recent').replaceChildren();for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;$('#recent').append(li);}[media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);fillCategories();render();if(role==='admin')await loadTeam();}catch{$('#login').hidden=false;$('#app').hidden=true;}}
+async function load(){
+  const login=$('#login'),app=$('#app'),message=$('#message');
+  // The unauthenticated state is normal: a 401 must show the login form, not a blank app.
+  login.hidden=false;app.hidden=true;message.textContent='Checking your sign-in…';
+  let session;
+  try{session=await api('/api/admin/session');}
+  catch(error){
+    if(error.status===401){message.textContent='Please sign in to open the dashboard.';hideStartupError();return;}
+    message.textContent='The sign-in service could not be checked.';
+    showStartupError(`Could not check your sign-in (${error.message}). Confirm the Pages Functions and D1 binding are deployed, then reload. You can still try signing in below.`);
+    return;
+  }
+  role=session.user.role;login.hidden=true;app.hidden=false;message.textContent='';$('#teamPanel').hidden=role!=='admin';
+  try{
+    const summary=await api('/api/admin/summary');
+    $('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);$('#recent').replaceChildren();
+    for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;$('#recent').append(li);}
+    [media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);fillCategories();render();if(role==='admin')await loadTeam();hideStartupError();
+  }catch(error){showStartupError(`You are signed in, but dashboard data could not load (${error.message}). Check the DB binding and database schema, then reload.`);say(error.message);}
+}
 function fillCategories(){for(const id of ['uploadCategory','categoryFilter','bulkCategory'])$( `#${id}`).innerHTML=(id==='categoryFilter'?'<option value="all">All categories</option>':'')+categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');document.querySelectorAll('.categorySelect').forEach(s=>s.innerHTML=categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''));}
 function selectedIds(){return [...document.querySelectorAll('.select-item:checked')].map(x=>x.value);}
 function filtered(){const q=$('#search').value.toLowerCase(),type=$('#typeFilter').value,cat=$('#categoryFilter').value,vis=$('#visibilityFilter').value;return media.filter(m=>(!q||`${m.title} ${m.caption} ${m.alt_text}`.toLowerCase().includes(q))&&(type==='all'||m.type===type)&&(cat==='all'||m.category_id===cat)&&(vis==='all'||(vis==='visible')===!!m.is_visible));}
