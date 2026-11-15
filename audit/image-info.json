@@ -1,0 +1,1059 @@
+{
+  "files": 88,
+  "portrait": 8,
+  "landscape": 75,
+  "square": 5,
+  "extreme": [
+    {
+      "path": "/images/ceiling/20220216_103418.webp",
+      "ratio": 2.216
+    },
+    {
+      "path": "/images/ceiling/20221208_091722.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/ceiling/20250122_095515.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/ceiling/20250126_173259.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/ceiling/20250126_205648.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/ceiling/screenshot_20221016-122602_whatsapp.webp",
+      "ratio": 0.45
+    },
+    {
+      "path": "/images/front-gate/20220902_165551.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/front-gate/20231117_160315.webp",
+      "ratio": 0.45
+    },
+    {
+      "path": "/images/front-gate/20240710_181019.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/front-gate/20250205_154500.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/indoor/20220216_103436.webp",
+      "ratio": 2.216
+    },
+    {
+      "path": "/images/indoor/20221208_091718.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/indoor/20231205_163502.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/indoor/20240305_105944.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/indoor/20240415_140823.webp",
+      "ratio": 2.216
+    },
+    {
+      "path": "/images/indoor/20240710_111729.webp",
+      "ratio": 2.222
+    },
+    {
+      "path": "/images/indoor/20250207_161326.webp",
+      "ratio": 2.222
+    }
+  ],
+  "tiny": [
+    {
+      "path": "/images/ceiling/20220216_103418.webp",
+      "width": 1600,
+      "height": 722
+    },
+    {
+      "path": "/images/ceiling/20221208_091722.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/ceiling/20250122_095515.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/ceiling/20250126_173259.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/ceiling/20250126_205648.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/ceiling/screenshot_20221016-122602_whatsapp.webp",
+      "width": 720,
+      "height": 1600
+    },
+    {
+      "path": "/images/front-gate/20220902_165551.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/front-gate/20231117_160315.webp",
+      "width": 720,
+      "height": 1600
+    },
+    {
+      "path": "/images/front-gate/20240710_181019.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/front-gate/20250205_154500.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/indoor/20220216_103436.webp",
+      "width": 1600,
+      "height": 722
+    },
+    {
+      "path": "/images/indoor/20221208_091718.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/indoor/20231205_163502.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/indoor/20240305_105944.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/indoor/20240415_140823.webp",
+      "width": 1600,
+      "height": 722
+    },
+    {
+      "path": "/images/indoor/20240710_111729.webp",
+      "width": 1600,
+      "height": 720
+    },
+    {
+      "path": "/images/indoor/20250207_161326.webp",
+      "width": 1600,
+      "height": 720
+    }
+  ],
+  "duplicates": [
+    [
+      "/images/ceiling/20211206_124918.webp",
+      "/images/indoor/20211206_124918.webp"
+    ],
+    [
+      "/images/ceiling/20241017_144829.webp",
+      "/images/indoor/20241017_144829.webp"
+    ],
+    [
+      "/images/ceiling/img_20251001_150047.webp",
+      "/images/indoor/img_20251001_150047.webp"
+    ]
+  ],
+  "rows": [
+    {
+      "url": "/images/ceiling/20211206_124841.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 373472,
+      "hash": "a82f7648ca5f6ee912d9ac65cff251bfdb524a062a8eb2f55d09dc9ee6f9118e",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20211206_124918.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 315694,
+      "hash": "a2c4b6f2dfa985591082228b1c6220257c7df8f97db9d0efb528e8a15e2d9bf6",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20220216_103418.webp",
+      "w": 1600,
+      "h": 722,
+      "ratio": 2.21606648199446,
+      "orientation": "landscape",
+      "size": 287414,
+      "hash": "429c274bc161c535218856fa83e6f7a2fdc8370d323f54d235c20e400c2bb7e2",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20221208_091722.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 366580,
+      "hash": "6e2d370c5ea61578ce55b0886a1bb88ab11c9cbc460dc219b8bd3b45ddcc72fc",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241017_144804.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 337778,
+      "hash": "915d120d701087c117c251e0ab433ae939178784eb3ffb967c4a5f3178431a6d",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241017_144829.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 316112,
+      "hash": "6fcf179d0319c19a43fb05cd69e34ccc23ff36dcb95bf16f165dd87c7983e09d",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241017_144927.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 290780,
+      "hash": "d6311a03131312c766fe267ff8ffcb0d80f64262f5ba509bbf632d9bc17e67bc",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241031_123221.webp",
+      "w": 900,
+      "h": 1600,
+      "ratio": 0.5625,
+      "orientation": "portrait",
+      "size": 345756,
+      "hash": "6d07c7f41ec4f863a18e7eb511c2104cccc7625cbbcc2d2d95f3f04363857d31",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241031_123231.webp",
+      "w": 900,
+      "h": 1600,
+      "ratio": 0.5625,
+      "orientation": "portrait",
+      "size": 263724,
+      "hash": "9656409e0c9c0e7e7af3e6bbd6ac5e876d0179f186f0f2c0d0310bec2ffaaca9",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20241102_101719.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 357742,
+      "hash": "49c49ee9d2069b588826e04cb19eb93c38b7f247e49fdc50c8e3fcbb885b0827",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20250122_095515.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 325954,
+      "hash": "af90c9640760688f72bf33d40c16c37d6db796b42e4ac59395e1b413dcb80264",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20250126_173259.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 169752,
+      "hash": "186fc7a4230d8584106cad321fc8dcac34076bd55e0a8ac03068bbe9f757a2eb",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/20250126_205648.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 228094,
+      "hash": "de2f257ca9266919adaaf5a7f8d734dd1ac9f984a20c09c06a903688463fd31a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/canopy1.png",
+      "w": 1268,
+      "h": 1240,
+      "ratio": 1.0225806451612902,
+      "orientation": "square",
+      "size": 2720920,
+      "hash": "29bc074857911acf90f68cba9ec5f73592773275124d6d5c5388cd7a57e90520",
+      "format": "png"
+    },
+    {
+      "url": "/images/ceiling/file_000000003d80821198d5bd2b591a0e0e.webp",
+      "w": 1268,
+      "h": 1240,
+      "ratio": 1.0225806451612902,
+      "orientation": "square",
+      "size": 402494,
+      "hash": "804124d0dca145d268de37f72495a9093bb9f997b45c253afca9b456ad110586",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/img_20251001_150047.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 386180,
+      "hash": "8ec72746c9a72f7fc2fda120b753fffe6d8fc110f8cdc75216108b896ace0e12",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/img_20251013_204113.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 279564,
+      "hash": "02ca1f4ac65a5912ea6b028ca4442a9e499fe484afbb26e0a2238a9d40734fce",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/img_20251014_120057.webp",
+      "w": 1200,
+      "h": 1600,
+      "ratio": 0.75,
+      "orientation": "portrait",
+      "size": 400318,
+      "hash": "711d871776bb51a13d263232864d9dac045ce08ea96dcd185577d6ae0a9e9bf2",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/img_20251016_174557.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 363452,
+      "hash": "0e0cbc6a2e7def75f58ff20c6c26c903385aa7ebea4cc91c71ccc680c9088398",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/screenshot_20221016-122602_whatsapp.webp",
+      "w": 720,
+      "h": 1600,
+      "ratio": 0.45,
+      "orientation": "portrait",
+      "size": 96256,
+      "hash": "5ca6b72f3e74a463bc582ce1cc3d01eff237fec0636f99fe0a1a98b0104dfcaf",
+      "format": "webp"
+    },
+    {
+      "url": "/images/ceiling/screenshot_20260911-182918.webp",
+      "w": 958,
+      "h": 948,
+      "ratio": 1.010548523206751,
+      "orientation": "square",
+      "size": 248092,
+      "hash": "a0f33fd4021c90cbee2af1750e7d70f0f43e71e1498451f4b3f5604a2f04784e",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20220902_165551.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 304854,
+      "hash": "1e086991743aecb3cae295a8192b7ecde617ff893ba653ec75a564b31e2d8f94",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20230507_151857.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 471640,
+      "hash": "96c171ff95b3d2304b639c503978eec929bbdf75c32801d393604415fc0c091f",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20230507_223210.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 396224,
+      "hash": "2a83c52b828a46f4d8608a14b3d784bdf9c7481573a237109c30bd2b6595d1f3",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20230919_161540.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 444732,
+      "hash": "35e831896503dd7527aa93d0269219e0546c59bb4be45e49cf61133411cd1e7d",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20230919_182412.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 324614,
+      "hash": "c0ff80d29e837faf146f72313ecd1379e6264728321766f7c4ff860364eacaf1",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20230920_173628.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 189064,
+      "hash": "7865a0ffc8ef8fa2250a22724708866c2628ac704a9fa9e2409e5d7dc7a57266",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20231117_160315.webp",
+      "w": 720,
+      "h": 1600,
+      "ratio": 0.45,
+      "orientation": "portrait",
+      "size": 209394,
+      "hash": "a95f48da5ed00fb75b457887999105afd6ed0fb1a8527a99d03dba0c9c5c431a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240117_152342.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 373044,
+      "hash": "677b2b4dd1fc920b3f45993e3678cd26ecabff75fd404f957c66a0bbb193c70a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240117_152403.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 350630,
+      "hash": "67034950cf437eab9a5c4a60d844534dce325a1715f60d6f2b074e3e7e7ae7cc",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240120_073612.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 201708,
+      "hash": "a91daab3a8e033a3d1290fd6f451feaddd87975248dc3859c457c9809f4a0436",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240129_160536.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 221128,
+      "hash": "70be9e2307b133af1464c9e89de6a01b876a867d08d957029357df0ab724feb6",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240416_183246.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 279066,
+      "hash": "39d943a1dfa315f768c3d7e20d5be07054d80ecf3ef71581c53b4eac9b324250",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20240710_181019.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 260800,
+      "hash": "db0277e0ea30102972d66e3f21ee1b4edec8e39963706c2517040ab66ed981bf",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20241017_144717.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 256804,
+      "hash": "5e1897e8f4c2f8bdd66bd4e64d676beab37e642cdf4fcddcd01e47bf9f7a1334",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20241018_175804.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 295116,
+      "hash": "d5c4d5c0058bda221475dbc5e9a1af8cb1f818dcd5a51e8f972efa72fd8e6307",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20241105_100717.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 287972,
+      "hash": "b6dd8394929b5119356768e77959c2e89fa97c7c95db22a0af5376027b829190",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20250109_162600.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 338580,
+      "hash": "f96c170e005404874231756c6f32dc052403e276f2e67bf86eb958b7f22e86be",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20250205_154500.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 321460,
+      "hash": "57eed18dc944aee411fa5235dc62d44d5b37f73fa821368eb61ba18ac2a69cde",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/20250305_141615.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 460552,
+      "hash": "637fb823a1be483c77cf4092dd1032728d05aba35bec6533f45fcd043c16ba6b",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/file_000000005bec8211bb91e063dffa13a9.webp",
+      "w": 1306,
+      "h": 1205,
+      "ratio": 1.083817427385892,
+      "orientation": "landscape",
+      "size": 456136,
+      "hash": "bec4e056c5f0693f375dbb030860dd1a502d479150d69ab46c0e3a52f972faee",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/file_000000005e1882088fe44c3d8936b82d.webp",
+      "w": 1448,
+      "h": 1086,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 446700,
+      "hash": "1c0a412ea0a57bea5e1eef373138a56d61f13deb9877874a39885ed9033e3f00",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/file_000000006b288211b79817f905322a9e.webp",
+      "w": 1448,
+      "h": 1086,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 315978,
+      "hash": "15fec5454d8bd4e65c06626baf03c67192f770069ce702c705c7f118b686d308",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/file_00000000880c820896693d9505ab4f6e.webp",
+      "w": 1254,
+      "h": 1254,
+      "ratio": 1,
+      "orientation": "square",
+      "size": 434260,
+      "hash": "4793941424d3951fc1f5bab2a2aef661b42d9ddbe252e3fb350bf3f97877fc7e",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/file_000000009d6c81f4bd4968a0b14191b3.webp",
+      "w": 1522,
+      "h": 1033,
+      "ratio": 1.473378509196515,
+      "orientation": "landscape",
+      "size": 455800,
+      "hash": "6bee816bbeb3304fb121b5caa0457d3daac83b0d0d27a6fd1cd00687d3d678bc",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/frontgate-01.png",
+      "w": 1306,
+      "h": 1205,
+      "ratio": 1.083817427385892,
+      "orientation": "landscape",
+      "size": 2726702,
+      "hash": "d15b315d31b3611cf6f3d9a72e8513ccf6392c2698b676601d71c3c2e6066433",
+      "format": "png"
+    },
+    {
+      "url": "/images/front-gate/frontgate-02.png",
+      "w": 1254,
+      "h": 1254,
+      "ratio": 1,
+      "orientation": "square",
+      "size": 2616226,
+      "hash": "4d97344f6d3c7b3d2afe316915f80e261f57dedad01cef3c50a87f264224abe2",
+      "format": "png"
+    },
+    {
+      "url": "/images/front-gate/img_20251016_181847.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 580214,
+      "hash": "e143262e7a07cce4c7f5ba8abb5e24ff918ba15ff29d118a99bd6ebf4ca89905",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/img_20251025_143020.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 388794,
+      "hash": "cfeaebc84d04e967132d72bdc3387de104fe4b9361417eb4a90b4d6e3a7e1f1a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/img_20251026_154722.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 717506,
+      "hash": "0c5752fc6576a7e06004a0a0b69ce387fef419f0e2488f4850923cf2ce165023",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/img_20260129_180521.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 418586,
+      "hash": "e8c870df80a6ac4d06862e236ef691693318aafbdfce77cd12cd2b0269269449",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/img_20260207_193133.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 405740,
+      "hash": "c8ecbbc8fec4286f0096317b60689c092e9d0c4f3f1632e7502f01d8e7c574ae",
+      "format": "webp"
+    },
+    {
+      "url": "/images/front-gate/screenshot_20260911-182823.webp",
+      "w": 987,
+      "h": 910,
+      "ratio": 1.0846153846153845,
+      "orientation": "landscape",
+      "size": 192520,
+      "hash": "5c9427dd91ff8dea82bf53e8c03f7a12c99cf329ace2133f966a7b17585025d8",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20211206_124918.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 315694,
+      "hash": "a2c4b6f2dfa985591082228b1c6220257c7df8f97db9d0efb528e8a15e2d9bf6",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20220216_103436.webp",
+      "w": 1600,
+      "h": 722,
+      "ratio": 2.21606648199446,
+      "orientation": "landscape",
+      "size": 231614,
+      "hash": "62f33730c1c191c31e5a3fba60e7ce3633412f7292eb1a143697120bd454b39e",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20221208_091718.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 290388,
+      "hash": "db1de32c054cfdcf4c79d8fc19b83c6d93dfb86fdca695de37b08f2da9ceb343",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20231112_141015.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 355022,
+      "hash": "91bf2e490b43cad8f8e2b7b45c1880815be2fc4244f51762a0559cfa2977a39b",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20231205_163502.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 196888,
+      "hash": "8874eb3c8057537a8c84cc39419391954697ce7735328dd0bd5e70709ac8f2a6",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20240305_105944.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 198648,
+      "hash": "7dc38ec88d93415e1cd6aa2ed0d57d282e01b9ae4c402c699c6b72ee2660cc39",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20240415_140823.webp",
+      "w": 1600,
+      "h": 722,
+      "ratio": 2.21606648199446,
+      "orientation": "landscape",
+      "size": 274214,
+      "hash": "13f09f88a3555d2d02f8fc4b588147b5d9c07abeca9a850e88e7b194cf2cdc85",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20240415_141025.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 383834,
+      "hash": "636caf79b7854eac47f012354b506f55f36d03d0f331b689600e9690e90603d7",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20240710_111729.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 294414,
+      "hash": "8c1bdf89de89e06b925202afda4f84d86aad2633f4004aa42f86246d3529fe65",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20240718_130232.webp",
+      "w": 900,
+      "h": 1600,
+      "ratio": 0.5625,
+      "orientation": "portrait",
+      "size": 378212,
+      "hash": "6ca38e0ce4cfbfc581a0bca81b0428987715f14c57821d5040979d905b83d9b4",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241017_144235.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 334020,
+      "hash": "0239ce2458671546476fb7859030fe13d005868dd78b2d49d92a617c2efb2016",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241017_144829.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 316112,
+      "hash": "6fcf179d0319c19a43fb05cd69e34ccc23ff36dcb95bf16f165dd87c7983e09d",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241031_123252.webp",
+      "w": 900,
+      "h": 1600,
+      "ratio": 0.5625,
+      "orientation": "portrait",
+      "size": 353386,
+      "hash": "6d60dc84fe9b5281f6a63e1efaba978c5c240d1640c9d83b066a4cbc28fb6ac4",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241102_101732.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 360176,
+      "hash": "f252eba131545bdbdbd20ff47f40d5f1bd3d4696141d0ed225a776ec302d3475",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241104_200940.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 264166,
+      "hash": "0068d5a52fcac9d3b01a7dc344529410dfa85cfa298bc83ce489d44394cf85d8",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241120_110241.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 359348,
+      "hash": "2b81d4e62273b6f2d8ceba9ba74861024dbbc0272fc8f155e8e0ef318e6f5e46",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20241123_105943.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 541072,
+      "hash": "c45cd2cc0aa48d4ae3dc4de78a98a482f052eec2b2c2787d353f3c6aa05c4c8a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250109_162623.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 289566,
+      "hash": "1dd4960af0df8652ea9cdbc3d1c0e32a0c41017aa4daba4ae2a0313c2640eab2",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250109_162648.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 227836,
+      "hash": "0ea6269527691d23a7a9f9ba94561ef28f2e165055d16c0984d03a50e2e221e6",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250205_154159.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 269632,
+      "hash": "3eb9003bc2275a49df0b93bdcf26dbbabee16fb87b3e45427a3033ae9e038e0b",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250205_154214.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 359244,
+      "hash": "08cc63cfdfe175e252d44bca4df4bd8bc825c4c58bce7b72ee4d46a0ca8a58cd",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250207_154616.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 242428,
+      "hash": "5dc776799706a9d20a4cc05f64fba06824d95c0766d66425ebbe408cc1c8f10a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250207_161326.webp",
+      "w": 1600,
+      "h": 720,
+      "ratio": 2.2222222222222223,
+      "orientation": "landscape",
+      "size": 274466,
+      "hash": "dbbe779064fc7ea01be096c6e696e0afc88b51367f7c0b6e8b6542791ea43d22",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/20250302_122410.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 363312,
+      "hash": "e39e61ceabd80b8fcc37cf173b6ccad942f4dd030acbb0245eec305e2ffe5eb7",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/file_0000000055e88210bc2374a28c486dcd.webp",
+      "w": 1490,
+      "h": 1055,
+      "ratio": 1.4123222748815165,
+      "orientation": "landscape",
+      "size": 355972,
+      "hash": "9feff2334258cec61ab226b9592cbaef8f92e837e232c05eab7c12af463a9c50",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/file_00000000eb6c82088638e75d4b6d6c8b.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 329728,
+      "hash": "fbed6b417fa021eb0662f04b6030094cf82391dfb1c9d353dc91294865b09fc1",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/img_20251001_150047.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 386180,
+      "hash": "8ec72746c9a72f7fc2fda120b753fffe6d8fc110f8cdc75216108b896ace0e12",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/img_20251014_105437.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 348910,
+      "hash": "020d4dc2856625ce72fa29dcc4104956f36ad0b414c4da7c25471626c0ce220c",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/img_20251014_105444.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 419226,
+      "hash": "f941253a6f53d1457f9a72d36eea895e8a98fc35627a766849fd9e35f45f0aa0",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/img_20260207_193152.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 395916,
+      "hash": "5821d6977fcf0644901b997022676a4fdb61d8cc1c84e734262b2baf2973d579",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/img_20260330_082003.webp",
+      "w": 1600,
+      "h": 1200,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 690172,
+      "hash": "036b043f93740dbe2bae1ab444b67709b33862a014fe5dceaabeafddb36a8734",
+      "format": "webp"
+    },
+    {
+      "url": "/images/indoor/screenshot_20260911-151719.webp",
+      "w": 1000,
+      "h": 1600,
+      "ratio": 0.625,
+      "orientation": "portrait",
+      "size": 374990,
+      "hash": "3b2ada47a2f65917c58ed4106619c36ae9dd84cc98074f32d47aeb0acd12239a",
+      "format": "webp"
+    },
+    {
+      "url": "/images/walkway/walkway1.webp",
+      "w": 1448,
+      "h": 1086,
+      "ratio": 1.3333333333333333,
+      "orientation": "landscape",
+      "size": 307542,
+      "hash": "d5b970ba06e6ef2f3b7ce64be716d7b1564eddc6e57265d3be60b7cce1e0cc44",
+      "format": "webp"
+    },
+    {
+      "url": "/images/walkway/walkway2.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 252504,
+      "hash": "8451d84f36f80fe7abb60360b122799d96a6dbe06c8150415f1238d8d70b26eb",
+      "format": "webp"
+    },
+    {
+      "url": "/images/walkway/walkway3.webp",
+      "w": 1600,
+      "h": 900,
+      "ratio": 1.7777777777777777,
+      "orientation": "landscape",
+      "size": 188278,
+      "hash": "3a4b6a8974822c14b0187f7e9c6fc4d70ebbbe917076948b5183df183b5988be",
+      "format": "webp"
+    }
+  ]
+}

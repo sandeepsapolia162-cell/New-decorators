@@ -33,6 +33,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const originalCards = grid ? [...grid.querySelectorAll(':scope > .portfolio-item')] : [];
   if (isPortfolio && grid) grid.classList.add('dynamic-loading');
 
+  // The static gallery also gets usable counted filters before the API responds.
+  if(isPortfolio&&grid&&filterBox){
+    const addCount=(button,count)=>{const badge=document.createElement('span');badge.className='filter-count';badge.textContent=String(count);button.append(badge);};
+    if(!filterBox.querySelector('[data-filter="all"]')){const all=document.createElement('button');all.className='filter-btn';all.dataset.filter='all';all.textContent='All';filterBox.prepend(all);}
+    filterBox.querySelectorAll('.filter-btn').forEach(button=>{const key=categoryKey(button.dataset.filter);if(button.querySelector('.filter-count'))return;button.textContent=button.dataset.filter==='all'?'All':(CATEGORY_LABELS[key]||button.textContent.trim());addCount(button,button.dataset.filter==='all'?originalCards.length:originalCards.filter(card=>categoryKey(card.dataset.category)===key).length);});
+    filterBox.addEventListener('click',event=>{const button=event.target.closest('.filter-btn');if(!button)return;filterBox.querySelectorAll('.filter-btn').forEach(item=>item.classList.toggle('active',item===button));grid.querySelectorAll('.portfolio-item').forEach(card=>card.hidden=button.dataset.filter!=='all'&&categoryKey(card.dataset.category)!==button.dataset.filter);});
+  }
+
   try {
     // Reveal only sections and filters. The gallery itself is visible without an observer.
     if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -98,8 +106,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           ? `/api/file/${encodeURIComponent(item.id)}?v=${version}`
           : item.poster_url || '';
       image.alt = item.alt_text || item.title || '';
-      image.loading = 'lazy';
+      image.loading = renderedItems.length < 8 ? 'eager' : 'lazy';
       image.decoding = 'async';
+      if (Number(item.width) > 0 && Number(item.height) > 0) {
+        image.width = Number(item.width);
+        image.height = Number(item.height);
+      }
       image.className = 'media-fade';
       card.append(image);
 
@@ -146,7 +158,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const all = document.createElement('button');
       all.className = 'filter-btn active';
       all.dataset.filter = 'all';
-      all.textContent = 'ALL';
+      all.textContent = 'All';
+      const allCount=document.createElement('span');allCount.className='filter-count';allCount.textContent=String(orderEntries.length);all.append(allCount);
       filters.append(all);
       const categoryByKey = new Map(categories.map(category => [categoryKey(category.name || category.slug), category]));
       const keys = [...new Set([
@@ -158,7 +171,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const button = document.createElement('button');
         button.className = 'filter-btn';
         button.dataset.filter = key;
-        button.textContent = CATEGORY_LABELS[key] || originalFilterLabels.get(key) || categoryByKey.get(key)?.name || key;
+        button.append(document.createTextNode(CATEGORY_LABELS[key] || originalFilterLabels.get(key) || categoryByKey.get(key)?.name || key));
+        const count=document.createElement('span');count.className='filter-count';count.textContent=String(orderEntries.filter(entry=>entry.key===key).length);button.append(count);
         filters.append(button);
       }
       filterBox.replaceChildren(filters);
@@ -184,56 +198,35 @@ document.addEventListener('DOMContentLoaded', async () => {
       : null;
     (initial || filterBox?.querySelector('.filter-btn[data-filter="all"]'))?.click();
 
+    const revealImages=()=>grid.querySelectorAll('img').forEach(image=>image.classList.add('loaded'));
     grid.querySelectorAll('img').forEach(image => {
       if (image.complete) image.classList.add('loaded');
       else image.addEventListener('load', () => image.classList.add('loaded'), { once: true });
+      image.addEventListener('error',()=>image.classList.add('loaded'),{once:true});
     });
+    window.setTimeout(revealImages,2000);
 
     const viewer = document.createElement('dialog');
     viewer.className = 'dynamic-viewer';
     viewer.setAttribute('aria-label', 'Media preview');
-    viewer.innerHTML = '<button class="viewer-close" aria-label="Close preview">×</button><div class="viewer-content"></div><p class="viewer-caption"></p>';
+    viewer.innerHTML = '<button class="viewer-close" aria-label="Close preview">×</button><button class="viewer-nav viewer-prev" aria-label="Previous item">‹</button><div class="viewer-content"></div><button class="viewer-nav viewer-next" aria-label="Next item">›</button><p class="viewer-caption"></p><p class="viewer-counter" aria-live="polite"></p>';
     document.body.append(viewer);
+    let viewerIndex=-1,touchX=null;
     const close = () => { viewer.close(); viewer.querySelector('.viewer-content').replaceChildren(); };
     viewer.querySelector('.viewer-close').onclick = close;
+    const openEntry=entry=>{viewerIndex=renderedItems.indexOf(entry);const item=entry.item,content=viewer.querySelector('.viewer-content');content.replaceChildren();if(item.type==='video'){if(item.source==='youtube'||item.source==='vimeo'){const frame=document.createElement('iframe');frame.src=item.source==='youtube'?item.external_url.replace('https://www.youtube.com/watch?v=','https://www.youtube-nocookie.com/embed/'):item.external_url.replace('https://vimeo.com/','https://player.vimeo.com/video/');frame.title=item.title||'Portfolio video';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;content.append(frame);}else{const video=document.createElement('video');video.src=`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;video.poster=item.poster_url||'';video.controls=true;video.playsInline=true;content.append(video);}}else{const image=document.createElement('img');image.src=item.source==='static'?item.external_url:`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;image.alt=item.alt_text||item.title||'';content.append(image);}viewer.querySelector('.viewer-caption').textContent=item.caption||'';viewer.querySelector('.viewer-counter').textContent=`${viewerIndex+1} / ${renderedItems.length}`;for(const n of [-1,1]){const next=renderedItems[(viewerIndex+n+renderedItems.length)%renderedItems.length];if(next.item.type==='image'){const pre=new Image();pre.src=next.item.source==='static'?next.item.external_url:`/api/file/${encodeURIComponent(next.item.id)}`;}}if(!viewer.open)viewer.showModal();};
+    const moveViewer=step=>{if(!renderedItems.length)return;openEntry(renderedItems[(viewerIndex+step+renderedItems.length)%renderedItems.length]);};
+    viewer.querySelector('.viewer-prev').onclick=()=>moveViewer(-1);viewer.querySelector('.viewer-next').onclick=()=>moveViewer(1);
+    viewer.addEventListener('touchstart',event=>{touchX=event.changedTouches[0].clientX;},{passive:true});viewer.addEventListener('touchend',event=>{if(touchX===null)return;const dx=event.changedTouches[0].clientX-touchX;if(Math.abs(dx)>45)moveViewer(dx<0?1:-1);touchX=null;},{passive:true});
     viewer.addEventListener('click', event => { if (event.target === viewer) close(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape' && viewer.open) close(); });
+    document.addEventListener('keydown', event => { if (!viewer.open)return;if(event.key==='Escape')close();if(event.key==='ArrowLeft')moveViewer(-1);if(event.key==='ArrowRight')moveViewer(1); });
     grid.addEventListener('click', event => {
       const card = event.target.closest('.portfolio-item');
       if (!card) return;
       const entry = renderedItems.find(candidate => candidate.item.id === card.dataset.mediaId);
       if (!entry) return; // Static fallback cards keep their original lightbox behavior.
       event.stopPropagation();
-      const item = entry.item;
-      const content = viewer.querySelector('.viewer-content');
-      content.replaceChildren();
-      if (item.type === 'video') {
-        if (item.source === 'youtube' || item.source === 'vimeo') {
-          const frame = document.createElement('iframe');
-          frame.src = item.source === 'youtube'
-            ? item.external_url.replace('https://www.youtube.com/watch?v=', 'https://www.youtube-nocookie.com/embed/')
-            : item.external_url.replace('https://vimeo.com/', 'https://player.vimeo.com/video/');
-          frame.title = item.title || 'Portfolio video';
-          frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-          frame.allowFullscreen = true;
-          content.append(frame);
-        } else {
-          const video = document.createElement('video');
-          video.src = `/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at || '1')}`;
-          video.poster = item.poster_url || '';
-          video.controls = true;
-          video.playsInline = true;
-          content.append(video);
-          video.play().catch(() => {});
-        }
-      } else {
-        const largeImage = document.createElement('img');
-        largeImage.src = item.source === 'static' ? item.external_url : `/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at || '1')}`;
-        largeImage.alt = item.alt_text || item.title || '';
-        content.append(largeImage);
-      }
-      viewer.querySelector('.viewer-caption').textContent = item.caption || '';
-      viewer.showModal();
+      openEntry(entry);
     });
   } catch (error) {
     console.info('Using original static gallery fallback.', error);
