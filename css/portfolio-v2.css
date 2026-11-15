@@ -9,6 +9,8 @@
 .portfolio-page .portfolio-grid>.portfolio-item img{display:block;width:100%;height:auto!important;aspect-ratio:auto!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;border-radius:inherit}
 .portfolio-page .portfolio-overlay{display:none!important}
 .portfolio-page .portfolio-item:hover{box-shadow:0 10px 28px #1a16141c}
+.portfolio-page .portfolio-item>.like-btn{z-index:4;display:grid;place-items:center;opacity:1;visibility:visible;pointer-events:auto}
+.portfolio-page .lightbox-like-btn{z-index:20;opacity:1;visibility:visible;pointer-events:auto}
 .portfolio-page .portfolio-item:focus-visible,.portfolio-page .filter-btn:focus-visible{outline:3px solid var(--clr-accent);outline-offset:3px}
 .portfolio-page .portfolio-item img{transition:filter .25s ease,opacity .25s ease}
 .portfolio-page .portfolio-item:hover img{filter:saturate(1.04)}

@@ -182,6 +182,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fragment = document.createDocumentFragment();
     for (const entry of orderEntries) fragment.append(entry.node);
     grid.replaceChildren(fragment);
+    // script.js initializes hearts before this deferred API render replaces the
+    // static cards. Re-run its idempotent injector after dynamic cards are in place.
+    if (window.LikeManager && typeof window.LikeManager.injectHearts === 'function') {
+      window.LikeManager.injectHearts();
+    }
 
     const applyFilter = filter => grid.querySelectorAll('.portfolio-item').forEach(card => {
       card.hidden = filter !== 'all' && categoryKey(card.dataset.category) !== filter;
