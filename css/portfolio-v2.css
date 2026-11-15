@@ -1,6 +1,6 @@
 /* Portfolio-only visual layer. Loaded only by portfolio.html. */
-.portfolio-page #sticky-filters{position:sticky;top:0;z-index:15;display:flex;justify-content:center;gap:.55rem;flex-wrap:wrap;padding:12px 10px;background:rgba(250,248,244,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(90,70,50,.14)}
-.portfolio-page #sticky-filters .filter-btn{border:1px solid var(--clr-accent);border-radius:999px;padding:.55rem 1rem;background:transparent;color:inherit;cursor:pointer}
+.portfolio-page #sticky-filters{position:sticky;top:78px;z-index:15;display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;min-height:54px;padding:6px 12px;background:var(--clr-light);border-top:1px solid rgba(90,70,50,.08);border-bottom:1px solid rgba(90,70,50,.14);box-shadow:0 5px 16px rgba(26,22,20,.055)}
+.portfolio-page #sticky-filters .filter-btn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid transparent;border-radius:999px;padding:.4rem .85rem;background:transparent;color:inherit;cursor:pointer;white-space:nowrap;line-height:1.2}
 .portfolio-page #sticky-filters .filter-btn.active,.portfolio-page #sticky-filters .filter-btn:hover{background:var(--clr-accent);color:#fff}
 .portfolio-page .filter-count{margin-left:.35rem;opacity:.75;font-size:.82em}
 .portfolio-page .portfolio-grid{display:block!important;columns:2;column-gap:14px;width:100%;margin:24px auto!important;min-height:0!important}
@@ -22,4 +22,6 @@
 .portfolio-page .viewer-prev{left:8px}.portfolio-page .viewer-next{right:8px}
 @media(min-width:700px){.portfolio-page .portfolio-grid{columns:3;column-gap:20px}.portfolio-page .portfolio-grid>.portfolio-item{margin-bottom:20px}}
 @media(min-width:1100px){.portfolio-page .portfolio-grid{columns:4;column-gap:22px}.portfolio-page .portfolio-grid>.portfolio-item{margin-bottom:22px}}
+@media(max-width:991px){.portfolio-page #sticky-filters{top:68px}}
+@media(max-width:560px){.portfolio-page #sticky-filters{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;min-height:50px;padding:5px 12px;scrollbar-width:none}.portfolio-page #sticky-filters::-webkit-scrollbar{display:none}.portfolio-page #sticky-filters .filter-btn{min-height:34px;padding:.35rem .7rem;font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.portfolio-page .portfolio-grid *{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
