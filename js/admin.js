@@ -79,4 +79,4 @@ async function replaceMedia(item,file){try{if(item.type==='video'){if(file.size>
 
 // Category controls are rendered after the initial API load.
 const originalLoad=load;load=async()=>{await originalLoad();if(!$('#app').hidden)await renderCategories();};
-load();
+(async()=>{try{await load();}catch(error){showStartupError(`Dashboard could not start: ${error?.message||String(error)}. Reload the page or check the browser console.`);}})();
