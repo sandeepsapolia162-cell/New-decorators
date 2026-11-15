@@ -1,0 +1,20 @@
+/* Shared desktop-only header refinement; mobile navigation keeps legacy rules. */
+:root{--header-h:88px;scroll-padding-top:var(--header-h)}
+@media(min-width:1024px){
+ .navbar,.navbar.scrolled{position:fixed;inset:0 0 auto;height:var(--header-h);min-height:0;padding:0 clamp(24px,5vw,88px);display:flex;align-items:center;gap:28px;background:rgba(26,22,20,.24);border-bottom:1px solid rgba(255,255,255,.16);backdrop-filter:blur(12px);box-shadow:0 6px 25px rgba(0,0,0,.12);transition:height .22s ease,background .22s ease,box-shadow .22s ease}
+ .navbar.scrolled{--header-h:72px;height:var(--header-h);background:rgba(26,22,20,.96);border-color:rgba(197,168,128,.28);backdrop-filter:blur(16px)}
+ .navbar .logo,.navbar.scrolled .logo{margin:0!important;color:#fff;font-size:1.6rem;line-height:1.05}
+ .navbar .logo span{color:#e6d3ba;font-size:.55rem;letter-spacing:.24em}
+ .navbar .nav-links{margin-left:auto;align-items:center;gap:clamp(16px,2vw,32px)}
+ .navbar .nav-links a,.navbar.scrolled .nav-links a{color:#fff;font-size:.75rem;letter-spacing:.12em}
+ .navbar .nav-links a[aria-current="page"]{color:#f1d7b5}
+ .navbar .nav-links a[aria-current="page"]:after,.navbar .nav-links a:hover:after{width:100%}
+ .navbar .nav-links li:last-child a{display:inline-flex;padding:10px 18px;border:1px solid rgba(241,215,181,.8);border-radius:999px}
+ .navbar .nav-links li:last-child a:hover{background:#c5a880;color:#1a1614}
+ .navbar :focus-visible{outline:2px solid #f1d7b5;outline-offset:4px}
+ .sepolia-universal-back-arrow{margin-left:0!important}
+ .hero,.page-header{scroll-margin-top:var(--header-h)}
+ .portfolio-page #sticky-filters{top:var(--header-h)!important;left:auto;width:100%;max-width:none;transform:none;margin:0!important;padding:8px max(5%,calc((100% - 1440px)/2))!important;justify-content:flex-start!important;box-sizing:border-box;background:var(--clr-light)!important;box-shadow:0 0 0 100vmax var(--clr-light),0 5px 16px rgba(26,22,20,.08);clip-path:inset(0 -100vmax)}
+}
+.skip-to-content{position:fixed;top:-100px;left:12px;z-index:100000;padding:12px 18px;background:var(--clr-light);color:var(--clr-dark);border:2px solid var(--clr-accent);border-radius:6px}
+.skip-to-content:focus{top:12px}
