@@ -184,9 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     grid.replaceChildren(fragment);
     // script.js initializes hearts before this deferred API render replaces the
     // static cards. Re-run its idempotent injector after dynamic cards are in place.
-    if (window.LikeManager && typeof window.LikeManager.injectHearts === 'function') {
-      window.LikeManager.injectHearts();
-    }
+    if (typeof LikeManager !== 'undefined' && typeof LikeManager.injectHearts === 'function') LikeManager.injectHearts();
 
     const applyFilter = filter => grid.querySelectorAll('.portfolio-item').forEach(card => {
       card.hidden = filter !== 'all' && categoryKey(card.dataset.category) !== filter;
@@ -230,8 +228,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!card) return;
       const entry = renderedItems.find(candidate => candidate.item.id === card.dataset.mediaId);
       if (!entry) return; // Static fallback cards keep their original lightbox behavior.
-      event.stopPropagation();
-      openEntry(entry);
+      // Let the site's established lightbox open so its like and WhatsApp
+      // controls remain available for API-rendered images too.
     });
   } catch (error) {
     console.info('Using original static gallery fallback.', error);
