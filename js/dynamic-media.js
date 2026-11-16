@@ -24,9 +24,12 @@ function categoryKey(value) {
 document.addEventListener('DOMContentLoaded', async () => {
   const isPortfolio = /\/portfolio(?:\.html)?\/?$/.test(location.pathname);
   const isDecoration = /\/decoration(?:\.html)?\/?$/.test(location.pathname);
-  if (!isPortfolio && !isDecoration) return;
+  const isHome = location.pathname === '/' || /\/index\.html$/.test(location.pathname);
+  if (!isPortfolio && !isDecoration && !isHome) return;
 
   const grid = document.querySelector('.portfolio-grid');
+  const videoGallery = document.querySelector('#videoGallery');
+  const videoSection = document.querySelector('.video-gallery-section');
   const filterBox = document.querySelector('.portfolio-filters');
   const originalGrid = grid?.innerHTML;
   const originalFilters = filterBox?.innerHTML;
@@ -60,6 +63,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!response.ok) throw new Error(`Media API returned ${response.status}`);
     const media = await response.json();
 
+    if (isHome && grid && Array.isArray(media)) {
+      const featured = media.filter(item => item.type === 'image' && item.is_featured && item.is_visible !== 0);
+      if (featured.length) {
+        const fragment = document.createDocumentFragment();
+        featured.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'portfolio-item is-visible';
+          const image = document.createElement('img');
+          image.src = item.source === 'static' ? item.external_url : `/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at || '1')}`;
+          image.alt = item.alt_text || item.title || 'Featured decoration';
+          image.loading = 'lazy';
+          image.decoding = 'async';
+          card.append(image);
+          if (item.title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'portfolio-overlay';
+            const label = document.createElement('span');
+            label.className = 'portfolio-category';
+            label.textContent = item.title;
+            overlay.append(label);
+            card.append(overlay);
+          }
+          fragment.append(card);
+        });
+        grid.replaceChildren(fragment);
+      }
+      return;
+    }
+
     if (isDecoration) {
       if (!Array.isArray(media) || media.length === 0) return;
       const groups = ['front-gate', 'walkway', 'ceiling', 'indoor'];
@@ -91,7 +123,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dynamicByCategory = new Map();
     const renderedItems = [];
     for (const item of media) {
-      if (!item || !['image', 'video'].includes(item.type) || !item.id || !item.category) continue;
+      if (!item || !['image', 'video'].includes(item.type) || !item.id) continue;
+      if (item.type === 'video') {
+        if (videoGallery) {
+          const card = document.createElement('article');
+          card.className = 'video-gallery-card';
+          const title = document.createElement('h3');
+          title.textContent = item.title || 'Video';
+          if (item.source === 'youtube' || item.source === 'vimeo') {
+            const frame = document.createElement('iframe');
+            frame.src = item.source === 'youtube'
+              ? item.external_url.replace('https://www.youtube.com/watch?v=', 'https://www.youtube-nocookie.com/embed/')
+              : item.external_url.replace('https://vimeo.com/', 'https://player.vimeo.com/video/');
+            frame.title = item.title || 'Sepolia Decorators video';
+            frame.loading = 'lazy';
+            frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            frame.allowFullscreen = true;
+            card.append(frame);
+          } else {
+            const video = document.createElement('video');
+            video.src = `/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at || '1')}`;
+            video.poster = item.poster_url || '';
+            video.controls = true;
+            video.playsInline = true;
+            video.preload = 'metadata';
+            card.append(video);
+          }
+          card.append(title);
+          if (item.caption) {
+            const caption = document.createElement('p');
+            caption.textContent = item.caption;
+            card.append(caption);
+          }
+          videoGallery.append(card);
+          videoSection.hidden = false;
+        }
+        continue;
+      }
+      if (!item.category) continue;
       const key = categoryKey(item.category);
       const card = document.createElement('div');
       card.className = 'portfolio-item is-visible';

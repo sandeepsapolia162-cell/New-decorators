@@ -11,6 +11,12 @@ body{font-kerning:normal;-webkit-font-smoothing:antialiased}
 .btn-primary:hover,.btn-dark:hover{box-shadow:0 10px 26px rgba(26,22,20,.14)}
 .portfolio-item,.service-card,.menu-card,.design-card{border-radius:10px;overflow:hidden;box-shadow:0 6px 24px rgba(26,22,20,.07);transition:transform .24s ease,box-shadow .24s ease}
 .portfolio-item:hover,.service-card:hover,.menu-card:hover,.design-card:hover{transform:translateY(-3px);box-shadow:var(--surface-shadow)}
+
+/* Keep the three featured home page cards the same height regardless of
+   each source photo's dimensions. The portfolio page has its own masonry rules. */
+body:not(.portfolio-page) .portfolio-grid>.portfolio-item{aspect-ratio:1.08;min-height:0}
+body:not(.portfolio-page) .portfolio-grid>.portfolio-item>img{width:100%;height:100%;object-fit:cover}
+@media(max-width:768px){body:not(.portfolio-page) .portfolio-grid>.portfolio-item{aspect-ratio:4/3}}
 input,select,textarea{border-radius:6px}input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--clr-accent);outline-offset:2px}
 @media(max-width:768px){:root{--section-pad:76px 5%}.navbar{padding:18px 5%}.logo{font-size:1.45rem}.logo span{letter-spacing:2px}.page-header{min-height:300px;height:38vh}.hero-title{font-size:clamp(3.1rem,12vw,5rem)}.hero-subtitle{font-size:clamp(1.35rem,6vw,2rem)}.section-title{font-size:clamp(2.1rem,8vw,3rem)}.btn{padding-inline:22px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
