@@ -28,10 +28,29 @@ async function load(){
     const summary=await api('/api/admin/summary');
     $('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);$('#recent').replaceChildren();
     for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;$('#recent').append(li);}
-    [media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);fillCategories();render();if(role==='admin')await loadTeam();hideStartupError();
+    [media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);fillCategories();
+// Ensure "Video Gallery" category exists for video uploads
+await (async () => {
+  const exists = categories.some(c => c.name === 'Video Gallery');
+  if (!exists) {
+    try {
+      await post('/api/admin/categories', { name: 'Video Gallery' });
+      // Reload categories after creation
+      const refreshed = await api('/api/categories');
+      categories = refreshed;
+      fillCategories();
+      say('Created default "Video Gallery" category.');
+    } catch (e) {
+      say(`Failed to ensure Video Gallery category: ${e.message}`);
+    }
+  }
+})();
+render();
+if(role==='admin')await loadTeam();
+hideStartupError();
   }catch(error){showStartupError(`You are signed in, but dashboard data could not load (${error.message}). Check the DB binding and database schema, then reload.`);say(error.message);}
 }
-function fillCategories(){for(const id of ['uploadCategory','categoryFilter','bulkCategory'])$( `#${id}`).innerHTML=(id==='categoryFilter'?'<option value="all">All categories</option>':'')+categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');document.querySelectorAll('.categorySelect').forEach(s=>s.innerHTML=categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''));}
+function fillCategories(){for(const id of ['uploadCategory','categoryFilter','bulkCategory','videoCategory'])$( `#${id}`).innerHTML=(id==='categoryFilter'?'<option value="all">All categories</option>':'')+categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');document.querySelectorAll('.categorySelect').forEach(s=>s.innerHTML=categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''));}
 function selectedIds(){return [...document.querySelectorAll('.select-item:checked')].map(x=>x.value);}
 function filtered(){const q=$('#search').value.toLowerCase(),type=$('#typeFilter').value,cat=$('#categoryFilter').value,vis=$('#visibilityFilter').value;return media.filter(m=>(!q||`${m.title} ${m.caption} ${m.alt_text}`.toLowerCase().includes(q))&&(type==='all'||m.type===type)&&(cat==='all'||m.category_id===cat)&&(vis==='all'||(vis==='visible')===!!m.is_visible));}
 function render(){const box=$('#library');box.replaceChildren();box.classList.toggle('list-view',listMode);for(const item of filtered())box.append(makeCard(item));}

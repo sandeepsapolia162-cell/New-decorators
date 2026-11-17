@@ -1,31 +1,123 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Media Dashboard | Sepolia Decorators</title>
-  <!-- Root-relative links work on both /admin and /admin/. -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/admin.css">
   <style>
-body, body.admin-body { opacity: 1 !important; visibility: visible !important; animation: none !important; transition: none !important; }
-</style>
+    /* Simplified layout tweaks */
+    .dash {max-width:1200px;margin:auto;padding:1rem;}
+    header {display:flex;justify-content:space-between;align-items:center;}
+    .stats {display:flex;gap:2rem;margin:1rem 0;}
+    .panel {margin-bottom:2rem;background:#fff;padding:1rem;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+    .toolbar {display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem;}
+    #library.grid-view .media-card {width:calc(33% - 1rem);margin:0.5rem;}
+    #library.list-view .media-card {width:100%;margin:0.5rem 0;}
+  </style>
 </head>
 <body class="admin-body">
 <main class="dash">
-<header><div><p class="eyebrow">SEPOLIA DECORATORS</p><h1>Media dashboard</h1></div><div class="actions"><a class="btn btn-dark" href="/portfolio.html">View website</a><button id="logout" class="btn btn-dark" type="button">Sign out</button></div></header>
-<section id="startupError" class="admin-error" role="alert" aria-live="assertive">
-  <h2>Dashboard is starting</h2>
-  <p id="startupErrorText">If this message stays here, the dashboard script or API did not load. The sign-in form is still available below.</p>
-</section>
-<noscript><section class="admin-error" role="alert"><h2>JavaScript is turned off</h2><p>The sign-in form is shown, but the dashboard needs JavaScript enabled to contact the secure sign-in service.</p></section></noscript>
-<section id="login" class="panel" aria-labelledby="loginHeading"><h2 id="loginHeading">Sign in</h2><form id="loginForm"><label>Email<input name="email" type="email" required autocomplete="username"></label><label>Password<input name="password" type="password" required autocomplete="current-password"></label><button class="btn btn-primary" type="submit">Sign in</button><p id="message" role="status" aria-live="polite"></p></form><a href="/admin/setup">First-time setup</a></section>
-<section id="app" hidden><div class="stats"><article class="panel"><span>Gallery placements</span><strong id="count">0</strong></article><article class="panel"><span>Uploaded files / 500 MB database</span><strong id="storage">0 MB</strong><progress id="storageBar" max="100" value="0"></progress></article></div><div class="panel"><h2>Recent uploads</h2><ul id="recent"></ul></div>
-<div class="panel"><h2>Upload images</h2><p>Images are resized to about 1920 pixels and converted to WebP before upload.</p><label>Category<select id="uploadCategory"></select></label><label class="drop">Drop image files here or choose files<input id="imageFiles" type="file" accept="image/*" multiple></label><div id="imageProgress"></div></div>
-<div class="panel"><h2>Add a video</h2><form id="linkForm"><label>YouTube or Vimeo link<input name="url" type="url" required placeholder="https://youtu.be/..."></label><label>Title<input name="title" maxlength="200"></label><label>Category<select name="category_id" class="categorySelect"></select></label><button class="btn btn-primary">Add video link</button></form><hr><p><strong>Video upload:</strong> MP4 or WebM, up to 50 MB.</p><label>Video file<input id="videoFile" type="file" accept="video/mp4,video/webm"></label><label>Video title<input id="videoTitle" maxlength="200"></label><label>Video category<select id="videoCategory" class="categorySelect"></select></label><button id="capturePoster" class="btn btn-dark" type="button">Capture a frame for the poster</button><span id="posterPreview"></span><button id="uploadVideo" class="btn btn-primary" type="button">Upload video</button><p id="videoProgress" role="status"></p></div>
-<div class="panel"><h2>Media library</h2><div class="toolbar"><input id="search" type="search" placeholder="Search title or caption"><select id="typeFilter"><option value="all">All media types</option><option value="image">Images</option><option value="video">Videos</option></select><select id="categoryFilter"><option value="all">All categories</option></select><select id="visibilityFilter"><option value="all">All visibility</option><option value="visible">Visible</option><option value="hidden">Hidden</option></select><button id="gridView" class="btn btn-dark">Grid</button><button id="listView" class="btn btn-dark">List</button></div><div class="toolbar"><label><input id="selectAll" type="checkbox"> Select all shown</label><button data-bulk="hide" class="btn btn-dark">Hide selected</button><button data-bulk="show" class="btn btn-dark">Show selected</button><select id="bulkCategory"></select><button data-bulk="category" class="btn btn-dark">Move selected</button><button data-bulk="delete" class="btn btn-dark">Delete selected</button><button id="backup" class="btn btn-primary">Download full ZIP backup</button><label class="file-button">Restore ZIP<input id="restoreZip" type="file" accept=".zip,application/zip" hidden></label></div><p class="tip">Drag cards to reorder. On a phone, touch and hold a card, then drag it.</p><div id="library" class="library"></div></div>
-<div class="panel"><h2>Categories</h2><form id="categoryForm" class="actions"><input name="name" placeholder="New category name" required maxlength="80"><button class="btn btn-primary">Add category</button></form><div id="categoryList"></div></div>
-<div id="teamPanel" class="panel" hidden><h2>Team accounts</h2><form id="userForm" class="actions"><input name="email" type="email" placeholder="Editor email" required><input name="password" type="password" minlength="12" placeholder="Temporary password (12+ characters)" required><button class="btn btn-primary">Add editor</button></form><div id="teamList"></div></div>
-<div class="panel"><h2>Change my password</h2><form id="passwordForm" class="actions"><input name="password" type="password" minlength="12" placeholder="New password (12+ characters)" required><button class="btn btn-primary">Update password</button></form></div><p id="notice" role="status"></p></section></main>
-<dialog id="cropDialog" class="crop-dialog"><form method="dialog"><button class="viewer-close" aria-label="Close">×</button></form><h2>Crop or rotate image</h2><p>Drag over the image to choose a crop area, or rotate before saving.</p><canvas id="cropCanvas"></canvas><div class="actions"><button id="rotateImage" class="btn btn-dark" type="button">Rotate 90°</button><button id="resetCrop" class="btn btn-dark" type="button">Reset crop</button><button id="saveCrop" class="btn btn-primary" type="button">Save cropped image</button></div></dialog><script src="/js/admin.js" defer></script></body></html>
+  <!-- Login -->
+  <section id="login" class="panel" aria-labelledby="loginHeading">
+    <h2 id="loginHeading">Sign in</h2>
+    <form id="loginForm">
+      <label>Email <input name="email" type="email" required autocomplete="username"></label>
+      <label>Password <input name="password" type="password" required autocomplete="current-password"></label>
+      <button type="submit" class="btn btn-primary">Sign in</button>
+      <p id="message" role="status" aria-live="polite"></p>
+    </form>
+    <a href="/admin/setup">First‑time setup</a>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="app" hidden>
+    <header>
+      <h1>Media dashboard</h1>
+      <button id="logout" class="btn btn-dark">Sign out</button>
+    </header>
+    <div class="stats">
+      <article class="panel"><span>Gallery items</span> <strong id="count">0</strong></article>
+      <article class="panel"><span>Storage used</span> <strong id="storage">0 MB</strong> <progress id="storageBar" max="100" value="0"></progress></article>
+    </div>
+
+    <!-- Image upload -->
+    <section class="panel">
+      <h2>Upload images</h2>
+      <label>Category
+        <select id="uploadCategory"></select>
+      </label>
+      <label class="drop">Drop images or click to select
+        <input id="imageFiles" type="file" accept="image/*" multiple hidden>
+      </label>
+      <div id="imageProgress"></div>
+    </section>
+
+    <!-- Video upload -->
+    <section class="panel">
+      <h2>Upload videos</h2>
+      <label>Video file
+        <input id="videoFile" type="file" accept="video/mp4,video/webm">
+      </label>
+      <label>Title <input id="videoTitle" maxlength="200"></label>
+      <label>Category
+        <select id="videoCategory"></select>
+      </label>
+      <button id="capturePoster" class="btn btn-dark" type="button">Capture poster frame</button>
+      <span id="posterPreview"></span>
+      <button id="uploadVideo" class="btn btn-primary" type="button">Upload video</button>
+      <p id="videoProgress" role="status"></p>
+    </section>
+
+    <!-- Media library -->
+    <section class="panel">
+      <h2>Media library</h2>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Search…">
+        <select id="typeFilter"><option value="all">All types</option><option value="image">Images</option><option value="video">Videos</option></select>
+        <select id="categoryFilter"><option value="all">All categories</option></select>
+        <select id="visibilityFilter"><option value="all">All visibility</option><option value="visible">Visible</option><option value="hidden">Hidden</option></select>
+        <button id="gridView" class="btn btn-dark">Grid</button>
+        <button id="listView" class="btn btn-dark">List</button>
+      </div>
+      <div id="library" class="library"></div>
+    </section>
+
+    <!-- Category management (admin only) -->
+    <section id="adminCategories" class="panel" hidden>
+      <h2>Categories</h2>
+      <form id="categoryForm" class="actions">
+        <input name="name" placeholder="New category name" required maxlength="80">
+        <button class="btn btn-primary">Add category</button>
+      </form>
+      <div id="categoryList"></div>
+    </section>
+
+    <!-- Team accounts (admin only) -->
+    <section id="teamPanel" class="panel" hidden>
+      <h2>Team accounts</h2>
+      <form id="userForm" class="actions">
+        <input name="email" type="email" placeholder="Editor email" required>
+        <input name="password" type="password" minlength="12" placeholder="Temp password" required>
+        <button class="btn btn-primary">Add editor</button>
+      </form>
+      <div id="teamList"></div>
+    </section>
+
+    <!-- Change password -->
+    <section class="panel">
+      <h2>Change my password</h2>
+      <form id="passwordForm" class="actions">
+        <input name="password" type="password" minlength="12" placeholder="New password" required>
+        <button class="btn btn-primary">Update password</button>
+      </form>
+    </section>
+
+    <p id="notice" role="status"></p>
+  </section>
+</main>
+<script src="/js/admin.js" defer></script>
+</body>
+</html>
