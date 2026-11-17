@@ -510,11 +510,11 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 /* ==========================================
    PAGE TRANSITION ANIMATION
    ========================================== */
-   body {
+   body:not(.admin-body) {
     opacity: 0;
     transition: opacity 0.6s ease-in-out;
 }
-body.page-loaded {
+body:not(.admin-body).page-loaded {
     opacity: 1;
 }
 
