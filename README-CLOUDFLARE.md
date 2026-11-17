@@ -71,7 +71,7 @@ If it says **“Build output directory not found”**, edit the Pages project bu
 
 ### Existing D1 database update
 
-If this site already has a D1 database, apply the photo-pinning migration once after deploying these changes. New databases already get this column from `schema.sql` and should skip this migration.
+The production D1 database configured in `wrangler.toml` has already received the photo-pinning migration. Do not run it there again. Any other existing D1 database should apply the migration once after deploying these changes. New databases already get this column from `schema.sql` and should skip this migration.
 
 Paste `migrations/0003-media-pinning.sql` into the D1 Console and execute it, or run:
 
