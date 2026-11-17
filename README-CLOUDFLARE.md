@@ -6,7 +6,7 @@ This project keeps the original site as normal static HTML. D1 stores the galler
 
 The pages are Home, About, Services, Decoration, Catering, Portfolio, Liked Designs, Contact, and Admin. The portfolio HTML contains **132 image cards** (the previous count of 266 counted both the card and its `<img>` line), with **88 distinct image paths** used by those cards. The `images` folder has 96 files in total, including decorative assets. The import creates 132 ordered records, reusing each static URL where that photo repeats. The generated `seed-media.sql` is about 44 KB and does not store image bytes.
 
-The Home page keeps its existing three-photo featured row, since it is a curated set. The Decoration page keeps its four existing text sections and selects the first visible image in each matching gallery category when the API responds; its original images remain as fallback. Catering has a menu PDF and a hero background, not an image gallery, so it stays static. Services has text and service cards, not a photo gallery, so it stays static. Liked Designs is a visitor's browser-local list, so it remains local and personalized rather than becoming a shared admin gallery. About and Contact have no managed gallery.
+The Home page keeps its three-photo featured row and has a separate featured-videos section. Videos appear in the Video Gallery on Portfolio and do not appear in the All photo view. Photos can be pinned to the top of their category and the All view. The Decoration page keeps its four existing text sections and selects the first visible image in each matching gallery category when the API responds; its original images remain as fallback. Catering has a menu PDF and a hero background, not an image gallery, so it stays static. Services has text and service cards, not a photo gallery, so it stays static. Liked Designs is a visitor's browser-local list, so it remains local and personalized rather than becoming a shared admin gallery. About and Contact have no managed gallery.
 
 The existing theme, business copy, contact details, and photos remain unchanged. One broken portfolio image reference was corrected from `canopy1.` to the existing `canopy1.png` file.
 
@@ -69,6 +69,18 @@ If it says **“Build output directory not found”**, edit the Pages project bu
 
 7. Bind it to Pages: open **Workers & Pages → your Pages project → Settings → Functions → D1 database bindings → Add binding**. Enter `DB` as the variable name, select `sepolia-decorators`, click **Save**, then redeploy if Cloudflare asks.
 
+### Existing D1 database update
+
+If this site already has a D1 database, apply the photo-pinning migration once after deploying these changes. New databases already get this column from `schema.sql` and should skip this migration.
+
+Paste `migrations/0003-media-pinning.sql` into the D1 Console and execute it, or run:
+
+```powershell
+npx.cmd wrangler d1 execute sepolia-decorators --remote --file=migrations/0003-media-pinning.sql
+```
+
+Do not run the migration twice; D1 will report that `is_pinned` already exists.
+
 ## 4. Import the static gallery references
 
 1. In PowerShell, make sure the current folder is the project folder (use the `Set-Location` command above), then run:
@@ -105,7 +117,7 @@ Keep Netlify and the current domain live. Test the Pages preview first:
 
 1. Visit Home, Decoration, Catering, Services, Portfolio, and Liked Designs on desktop and phone-sized browser windows.
 2. Sign in at `/admin`. Upload an image and confirm it becomes WebP. Edit its title and alt text, hide/show it, reorder it, and delete the test upload.
-3. Add a YouTube or Vimeo link, then open it from the public portfolio. If you test a local video upload, use MP4/WebM under 10 MB and check playback and seeking.
+3. Add a YouTube or Vimeo link, then open it from the public portfolio. To try a local upload, choose a common video file; the browser converts it to WebM before upload. Check playback and seeking in Video Gallery.
 4. Add an editor and confirm it cannot add/remove/reset users or delete categories.
 5. Download a ZIP backup and restore that ZIP. The restore adds missing records and skips matching IDs; it does not erase existing content.
 6. Confirm that the static portfolio still appears if the dynamic API is unavailable. The original cards are present in the HTML and the enhancement script leaves them in place when its API request fails.
@@ -152,9 +164,10 @@ DNS changes can take time to spread. During that time some visitors may still re
 ## How to use the dashboard
 
 - **Upload images:** choose a category, then drop files into the upload area or click it to choose files. The browser resizes to at most about 1920 pixels and converts to WebP at about 80% quality. Progress and before/after sizes are shown.
-- **Add videos:** paste a YouTube/Vimeo link for automatic provider detection and thumbnail. For a short file choose MP4/WebM up to 10 MB. For bigger files, use the free HandBrake tool and choose H.264 MP4 with a lower resolution or quality. A poster frame can be captured in the browser.
-- **Edit:** change title, caption, alt description, category, visibility, and featured status in a media card. Static originals can be edited, reordered, hidden, or removed from the gallery; deleting their database row never deletes the file from the GitHub project. “Replace file” for a static image uploads a new D1 copy for that gallery entry.
-- **Crop/rotate:** on an image card choose **Crop / rotate**, drag a rectangle over the part to keep, rotate if needed, then save. This saves a new WebP upload.
+- **Add videos:** paste a YouTube/Vimeo link or choose a video file. On first use, the dashboard downloads the roughly 31 MB FFmpeg browser engine from jsDelivr. Conversion and edits happen on the admin's device; only the compressed WebM is uploaded. Output uploads are limited to 50 MB, with source files limited to 512 MB. Browser memory and codecs can still limit unusually large or protected source files.
+- **Edit:** change title, caption, alt description, visibility, and home-page feature status in a media card. Photos also have a pin control; pinned photos appear first in their category and the All view. Videos have their own feature control and always live in the portfolio Video Gallery.
+- **Crop and adjust:** edit a photo's crop, rotation, brightness, contrast, and saturation, then save it as WebP. Video uploads and edits can crop the edges and adjust brightness, contrast, and saturation before WebM conversion.
+- **Replace files:** replacing a photo creates an optimized WebP copy in D1. Replacing or editing a video runs it through the same browser conversion flow.
 - **Reorder:** drag media cards. On touch screens, hold a card briefly and drag. The order saves to D1.
 - **Bulk actions:** select cards and use hide/show, move-category, or delete. Editors may work with media; only admins can manage team accounts or delete categories.
 - **Categories:** add, rename, move up/down, or delete an empty category. The dashboard warns if items still use a category; move those items first.
@@ -188,7 +201,7 @@ The script writes only the salted password hash to the temporary SQL file, not t
 - Cloudflare Workers Free currently allows 100,000 Function requests per day. Once exceeded, dynamic API requests can fail until the daily reset; static site files remain available.
 - One free D1 database currently has a **500 MB** size limit. The **5 GB** allowance is total D1 storage across the account, not one free database. Free D1 also has daily row-read and row-write limits. When a limit is exceeded, queries can fail until the daily reset. Check **D1 → Metrics** occasionally.
 - Existing static pictures do not count against D1 storage. New uploads count toward the single database's 500 MB. The dashboard shows used bytes against that limit.
-- Videos are capped at 10 MB. Range requests retrieve only the D1 chunks needed for the requested part of a video. D1 is not a specialist video service; avoid building a large video archive there.
+- Compressed videos are capped at 50 MB, and browser conversion accepts source files up to 512 MB. Range requests retrieve only the D1 chunks needed for the requested part of a video. D1 is not a specialist video service; avoid building a large video archive there.
 - Passwords use PBKDF2-SHA-256 with a unique random salt and **100,000 iterations**. This matches Cloudflare Workers WebCrypto's supported maximum. A higher count makes each password guess more expensive for an attacker, but Workers currently rejects counts over 100,000. 100,000 therefore gives less resistance per guess than commonly recommended higher settings. A long password (at least 12 characters; a longer unique passphrase is better) and login throttling help compensate. The Workers Free CPU limit is 10 ms per request. I cannot confirm that PBKDF2 at 100,000 iterations stays under that limit in production; Cloudflare says heavier authentication work can take 10–20 ms, so the check is required on your deployed preview. Watch **Workers & Pages → your project → Metrics** for CPU-limit errors (Error 1102). If those appear during login, the requested PBKDF2 setting conflicts with the free CPU limit; the closest free-safe solution would be using a hosted identity provider, which would change the chosen stack, or moving auth to a plan with a higher CPU allowance. [Workers limits](https://developers.cloudflare.com/workers/platform/limits/) · [Workers Web Crypto](https://developers.cloudflare.com/workers/runtime-apis/web-crypto/)
 - ZIP creation and restore happen in the browser and can use considerable memory for a very large library. Save monthly backups to your computer and keep the repository copy of `images/`.
 - Cloudflare currently serves Pages static files without an inactivity pause, but no company can guarantee that a free plan will stay free forever. Quotas and plan terms can change. R2 is not used because enabling it may require a payment method.

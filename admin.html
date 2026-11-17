@@ -7,174 +7,214 @@
   <title>Media Dashboard | Sepolia Decorators</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/admin.css">
-  <style>
-    body, body.admin-body { opacity: 1 !important; visibility: visible !important; animation: none !important; transition: none !important; }
-  </style>
 </head>
 <body class="admin-body">
 <main class="dash">
-  <header>
+  <header class="dash-header">
     <div>
       <p class="eyebrow">SEPOLIA DECORATORS</p>
       <h1>Media dashboard</h1>
+      <p class="dashboard-intro">Add, organize and polish the photos and videos on your website.</p>
     </div>
     <div class="actions">
-      <a class="btn btn-dark" href="/portfolio.html">View website</a>
+      <a class="btn btn-dark" href="/portfolio.html">View portfolio</a>
       <button id="logout" class="btn btn-dark" type="button">Sign out</button>
     </div>
   </header>
 
-  <section id="startupError" class="admin-error" role="alert" aria-live="assertive">
-    <h2>Dashboard is starting</h2>
-    <p id="startupErrorText">If this message stays here, the dashboard script or API did not load. The sign-in form is still available below.</p>
+  <section id="startupError" class="admin-error" role="alert" aria-live="assertive" hidden>
+    <h2>Dashboard could not start</h2>
+    <p id="startupErrorText">The media service did not respond. Reload the page and try again.</p>
   </section>
   <noscript>
     <section class="admin-error" role="alert">
       <h2>JavaScript is turned off</h2>
-      <p>The sign-in form is shown, but the dashboard needs JavaScript enabled to contact the secure sign-in service.</p>
+      <p>Sign in and media tools need JavaScript to contact the secure media service.</p>
     </section>
   </noscript>
 
-  <section id="login" class="panel" aria-labelledby="loginHeading">
-    <h2 id="loginHeading">Sign in</h2>
+  <section id="login" class="login-panel panel" aria-labelledby="loginHeading">
+    <div class="login-copy">
+      <p class="eyebrow">PRIVATE MEDIA LIBRARY</p>
+      <h2 id="loginHeading">Sign in to manage your site</h2>
+      <p>Your photos, videos and account settings are kept in the protected dashboard.</p>
+    </div>
     <form id="loginForm">
       <label>Email <input name="email" type="email" required autocomplete="username"></label>
       <label>Password <input name="password" type="password" required autocomplete="current-password"></label>
       <button class="btn btn-primary" type="submit">Sign in</button>
       <p id="message" role="status" aria-live="polite"></p>
+      <a href="/admin/setup">First-time setup</a>
     </form>
-    <a href="/admin/setup">First‑time setup</a>
   </section>
 
-  <!-- Dashboard -->
   <section id="app" hidden>
-    <header>
-      <h1>Media dashboard</h1>
-      <button id="logoutApp" class="btn btn-dark">Sign out</button>
-    </header>
-    <div class="stats">
-      <article class="panel"><span>Gallery items</span> <strong id="count">0</strong></article>
-      <article class="panel"><span>Storage used</span> <strong id="storage">0 MB</strong> <progress id="storageBar" max="100" value="0"></progress></article>
+    <div class="dashboard-summary">
+      <div class="stats">
+        <article class="stat-card"><span>Library items</span><strong id="count">0</strong></article>
+        <article class="stat-card">
+          <div class="stat-heading"><span>Storage used</span><strong id="storage">0 MB</strong></div>
+          <progress id="storageBar" max="100" value="0" aria-label="Storage used"></progress>
+          <small>Shared 500 MB media allowance</small>
+        </article>
+      </div>
     </div>
 
-    <ul id="recent" class="admin-recent"></ul>
+    <nav class="dashboard-nav" aria-label="Dashboard sections" role="tablist">
+      <button type="button" role="tab" aria-selected="true" data-dashboard-tab="overview">Overview</button>
+      <button type="button" role="tab" aria-selected="false" data-dashboard-tab="upload">Add media</button>
+      <button type="button" role="tab" aria-selected="false" data-dashboard-tab="library">Library</button>
+      <button type="button" role="tab" aria-selected="false" data-dashboard-tab="manage">Organize</button>
+      <button type="button" role="tab" aria-selected="false" data-dashboard-tab="settings">Settings</button>
+    </nav>
 
-    <!-- Image upload -->
-    <section class="panel">
-      <h2>Upload images</h2>
-      <label>Category
-        <select id="uploadCategory"></select>
-      </label>
-      <label class="drop">Drop images or click to select
-        <input id="imageFiles" type="file" accept="image/*" multiple hidden>
-      </label>
-      <div id="imageProgress"></div>
-    </section>
-
-    <!-- Video upload -->
-    <section class="panel">
-      <h2>Upload videos</h2>
-      <label>Video file
-        <input id="videoFile" type="file" accept="video/mp4,video/webm">
-      </label>
-      <label>Title <input id="videoTitle" maxlength="200"></label>
-      <label>Category
-        <select id="videoCategory"></select>
-      </label>
-      <button id="capturePoster" class="btn btn-dark" type="button">Capture poster frame</button>
-      <span id="posterPreview"></span>
-      <button id="uploadVideo" class="btn btn-primary" type="button">Upload video</button>
-      <p id="videoProgress" role="status"></p>
-    </section>
-
-    <!-- Add video link (YouTube / Vimeo) -->
-    <section class="panel">
-      <h2>Add video link</h2>
-      <form id="linkForm" class="actions">
-        <input name="url" type="url" placeholder="YouTube or Vimeo URL" required>
-        <input name="title" placeholder="Title (optional)" maxlength="200">
-        <select name="category_id" id="linkCategory"></select>
-        <button class="btn btn-primary">Add video link</button>
-      </form>
-    </section>
-
-    <!-- Media library -->
-    <section class="panel">
-      <h2>Media library</h2>
-      <div class="toolbar">
-        <label><input id="selectAll" type="checkbox"> Select all</label>
-        <select id="bulkCategory"></select>
-        <button class="btn btn-dark" data-bulk="move">Move selected</button>
-        <button class="btn btn-dark" data-bulk="show">Show selected</button>
-        <button class="btn btn-dark" data-bulk="hide">Hide selected</button>
-        <button class="btn btn-dark" data-bulk="delete">Delete selected</button>
+    <section class="dashboard-panel" data-dashboard-panel="overview" role="tabpanel">
+      <div class="panel-heading">
+        <div><p class="eyebrow">YOUR WEBSITE MEDIA</p><h2>At a glance</h2></div>
+        <button class="btn btn-primary" type="button" data-open-dashboard-tab="upload">Add photos or videos</button>
       </div>
-      <div class="toolbar">
-        <input id="search" type="search" placeholder="Search…">
-        <select id="typeFilter"><option value="all">All types</option><option value="image">Images</option><option value="video">Videos</option></select>
+      <p class="tip">Pinned photos rise to the top of their category and the All view. Featured videos appear in their own section on the home page.</p>
+      <h3 class="subheading">Recently added</h3>
+      <ul id="recent" class="admin-recent"></ul>
+    </section>
+
+    <section class="dashboard-panel" data-dashboard-panel="upload" role="tabpanel" hidden>
+      <div class="panel-heading">
+        <div><p class="eyebrow">ADD TO YOUR PORTFOLIO</p><h2>Add media</h2></div>
+        <p class="tip">Images become optimized WebP files. Videos are converted in your browser and saved as compressed WebM.</p>
+      </div>
+      <div class="upload-grid">
+        <section class="panel upload-card" aria-labelledby="imageUploadHeading">
+          <div class="upload-card-heading"><span class="media-icon" aria-hidden="true">✦</span><div><h3 id="imageUploadHeading">Photos</h3><p>Upload one or more images</p></div></div>
+          <label>Portfolio category
+            <select id="uploadCategory"></select>
+          </label>
+          <label class="drop">Drop photos here or choose files
+            <input id="imageFiles" type="file" accept="image/*" multiple>
+          </label>
+          <p class="tip">Photos are resized to a portfolio-friendly size and converted to WebP to reduce storage and loading time.</p>
+          <div id="imageProgress" class="upload-progress" aria-live="polite"></div>
+        </section>
+
+        <section class="panel upload-card" aria-labelledby="videoUploadHeading">
+          <div class="upload-card-heading"><span class="media-icon" aria-hidden="true">▶</span><div><h3 id="videoUploadHeading">Videos</h3><p>Choose a source video in any common format</p></div></div>
+          <label>Video file
+            <input id="videoFile" type="file" accept="video/*,.avi,.mov,.mkv,.m4v,.mpg,.mpeg,.3gp,.flv,.ts,.mts,.m2ts,.wmv,.asf,.ogv">
+          </label>
+          <button id="clearVideoEdit" class="btn btn-quiet" type="button" hidden>Start a new video</button>
+          <div class="video-preview-frame" id="videoPreviewFrame" hidden>
+            <video id="videoPreview" controls playsinline preload="metadata"></video>
+            <p id="videoPreviewNote" class="tip"></p>
+          </div>
+          <label>Title <input id="videoTitle" maxlength="200" placeholder="Give this video a name"></label>
+          <p class="destination-note"><strong>Destination:</strong> Portfolio → Video Gallery</p>
+          <label>Compression
+            <select id="videoQuality"><option value="34" selected>Balanced · recommended</option><option value="38">Smaller file</option><option value="30">Higher quality</option></select>
+          </label>
+          <details class="edit-controls" open>
+            <summary>Crop and adjust</summary>
+            <div class="control-grid">
+              <label>Crop edges <output id="videoCropValue">0%</output><input id="videoCrop" type="range" min="0" max="25" step="1" value="0"></label>
+              <label>Brightness <output id="videoBrightnessValue">0</output><input id="videoBrightness" type="range" min="-0.3" max="0.3" step="0.05" value="0"></label>
+              <label>Contrast <output id="videoContrastValue">100%</output><input id="videoContrast" type="range" min="70" max="150" step="5" value="100"></label>
+              <label>Saturation <output id="videoSaturationValue">100%</output><input id="videoSaturation" type="range" min="0" max="180" step="5" value="100"></label>
+            </div>
+            <button id="resetVideoEdits" class="btn btn-quiet" type="button">Reset adjustments</button>
+          </details>
+          <button id="uploadVideo" class="btn btn-primary" type="button">Compress and add video</button>
+          <p id="videoProgress" class="progress-message" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+
+      <section class="panel link-card" aria-labelledby="videoLinkHeading">
+        <div><h3 id="videoLinkHeading">Add a hosted video</h3><p class="tip">Add a public YouTube or Vimeo link without uploading a video file.</p></div>
+        <form id="linkForm" class="actions">
+          <input name="url" type="url" placeholder="YouTube or Vimeo URL" required>
+          <input name="title" placeholder="Title (optional)" maxlength="200">
+          <button class="btn btn-dark">Add video link</button>
+        </form>
+      </section>
+    </section>
+
+    <section class="dashboard-panel" data-dashboard-panel="library" role="tabpanel" hidden>
+      <div class="panel-heading">
+        <div><p class="eyebrow">MEDIA LIBRARY</p><h2>Find and manage items</h2></div>
+        <button class="btn btn-primary" type="button" data-open-dashboard-tab="upload">Add media</button>
+      </div>
+      <div class="library-toolbar">
+        <label><input id="selectAll" type="checkbox"> Select all</label>
+        <select id="bulkCategory" aria-label="Move selected to category"></select>
+        <button class="btn btn-dark" data-bulk="category" type="button">Move</button>
+        <button class="btn btn-dark" data-bulk="show" type="button">Show</button>
+        <button class="btn btn-dark" data-bulk="hide" type="button">Hide</button>
+        <button class="btn btn-dark" data-bulk="pin" type="button">Pin photos</button>
+        <button class="btn btn-dark" data-bulk="unpin" type="button">Unpin photos</button>
+        <button class="btn btn-danger" data-bulk="delete" type="button">Delete</button>
+      </div>
+      <div class="library-filters">
+        <input id="search" type="search" placeholder="Search titles and captions…">
+        <select id="typeFilter"><option value="all">All media</option><option value="image">Photos</option><option value="video">Videos</option></select>
         <select id="categoryFilter"><option value="all">All categories</option></select>
-        <select id="visibilityFilter"><option value="all">All visibility</option><option value="visible">Visible</option><option value="hidden">Hidden</option></select>
-        <button id="gridView" class="btn btn-dark">Grid</button>
-        <button id="listView" class="btn btn-dark">List</button>
+        <select id="visibilityFilter"><option value="all">Any visibility</option><option value="visible">Visible</option><option value="hidden">Hidden</option></select>
+        <div class="view-toggle"><button id="gridView" class="btn btn-dark" type="button" aria-pressed="true">Grid</button><button id="listView" class="btn btn-dark" type="button" aria-pressed="false">List</button></div>
       </div>
       <div id="library" class="library"></div>
+      <p id="emptyLibrary" class="empty-state" hidden>No items match these filters. Try a different search or add new media.</p>
     </section>
 
-    <!-- Backup & Restore -->
-    <section class="panel">
-      <h2>Backup &amp; Restore</h2>
-      <div class="actions">
-        <button id="backup" class="btn btn-dark" type="button">Download ZIP backup</button>
-        <label class="btn btn-dark file-button">Restore from ZIP
-          <input id="restoreZip" type="file" accept=".zip" hidden>
-        </label>
+    <section class="dashboard-panel" data-dashboard-panel="manage" role="tabpanel" hidden>
+      <div class="panel-heading"><div><p class="eyebrow">KEEP THINGS TIDY</p><h2>Organize</h2></div></div>
+      <section id="adminCategories" class="panel manage-card" hidden>
+        <h3>Portfolio categories</h3>
+        <p class="tip">Use categories to group photos into clear sections on your portfolio page.</p>
+        <form id="categoryForm" class="actions"><input name="name" placeholder="New category name" required maxlength="80"><button class="btn btn-primary">Add category</button></form>
+        <div id="categoryList"></div>
+      </section>
+      <section id="teamPanel" class="panel manage-card" hidden>
+        <h3>Team access</h3>
+        <p class="tip">Add or remove editors who can manage site media.</p>
+        <form id="userForm" class="actions"><input name="email" type="email" placeholder="Editor email" required><input name="password" type="password" minlength="12" placeholder="Temporary password" required><button class="btn btn-primary">Add editor</button></form>
+        <div id="teamList"></div>
+      </section>
+    </section>
+
+    <section class="dashboard-panel" data-dashboard-panel="settings" role="tabpanel" hidden>
+      <div class="panel-heading"><div><p class="eyebrow">ACCOUNT &amp; SAFETY</p><h2>Settings</h2></div></div>
+      <div class="settings-grid">
+        <section class="panel manage-card">
+          <h3>Backup and restore</h3>
+          <p class="tip">Keep an offline copy of your gallery details and uploaded files.</p>
+          <div class="actions">
+            <button id="backup" class="btn btn-dark" type="button">Download ZIP backup</button>
+            <label class="btn btn-dark file-button">Restore from ZIP<input id="restoreZip" type="file" accept=".zip" hidden></label>
+          </div>
+        </section>
+        <section class="panel manage-card">
+          <h3>Change my password</h3>
+          <p class="tip">Use at least 12 characters. Your current sign-in will end after the update.</p>
+          <form id="passwordForm" class="actions"><input name="password" type="password" minlength="12" placeholder="New password" required><button class="btn btn-primary">Update password</button></form>
+        </section>
       </div>
     </section>
-
-    <!-- Category management (admin only) -->
-    <section id="adminCategories" class="panel" hidden>
-      <h2>Categories</h2>
-      <form id="categoryForm" class="actions">
-        <input name="name" placeholder="New category name" required maxlength="80">
-        <button class="btn btn-primary">Add category</button>
-      </form>
-      <div id="categoryList"></div>
-    </section>
-
-    <!-- Team accounts (admin only) -->
-    <section id="teamPanel" class="panel" hidden>
-      <h2>Team accounts</h2>
-      <form id="userForm" class="actions">
-        <input name="email" type="email" placeholder="Editor email" required>
-        <input name="password" type="password" minlength="12" placeholder="Temp password" required>
-        <button class="btn btn-primary">Add editor</button>
-      </form>
-      <div id="teamList"></div>
-    </section>
-
-    <!-- Change password -->
-    <section class="panel">
-      <h2>Change my password</h2>
-      <form id="passwordForm" class="actions">
-        <input name="password" type="password" minlength="12" placeholder="New password" required>
-        <button class="btn btn-primary">Update password</button>
-      </form>
-    </section>
-
-    <p id="notice" role="status"></p>
+    <p id="notice" class="dashboard-notice" role="status" aria-live="polite"></p>
   </section>
 </main>
-<dialog id="cropDialog" class="crop-dialog">
-  <form method="dialog">
-    <button class="viewer-close" aria-label="Close">×</button>
-  </form>
-  <h2>Crop or rotate image</h2>
-  <p>Drag over the image to choose a crop area, or rotate before saving.</p>
-  <canvas id="cropCanvas"></canvas>
-  <div class="actions">
+
+<dialog id="cropDialog" class="crop-dialog" aria-labelledby="photoEditorTitle">
+  <form method="dialog"><button class="viewer-close" aria-label="Close editor">×</button></form>
+  <p class="eyebrow">PHOTO EDITOR</p>
+  <h2 id="photoEditorTitle">Crop and adjust photo</h2>
+  <p class="tip">Drag across the image to select a crop area, or leave it untouched to keep the full photo.</p>
+  <canvas id="cropCanvas" aria-label="Photo crop area"></canvas>
+  <div class="control-grid photo-controls">
+    <label>Brightness <output id="photoBrightnessValue">100%</output><input id="photoBrightness" type="range" min="60" max="140" step="5" value="100"></label>
+    <label>Contrast <output id="photoContrastValue">100%</output><input id="photoContrast" type="range" min="60" max="160" step="5" value="100"></label>
+    <label>Saturation <output id="photoSaturationValue">100%</output><input id="photoSaturation" type="range" min="0" max="180" step="5" value="100"></label>
+  </div>
+  <div class="actions dialog-actions">
     <button id="rotateImage" class="btn btn-dark" type="button">Rotate 90°</button>
-    <button id="resetCrop" class="btn btn-dark" type="button">Reset crop</button>
-    <button id="saveCrop" class="btn btn-primary" type="button">Save cropped image</button>
+    <button id="resetCrop" class="btn btn-quiet" type="button">Reset</button>
+    <button id="saveCrop" class="btn btn-primary" type="button">Save edited photo</button>
   </div>
 </dialog>
 <script src="/js/admin.js" defer></script>

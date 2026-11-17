@@ -4,7 +4,7 @@ const CATEGORY_LABELS = {
   walkway: 'WALKWAY',
   ceiling: 'Draping',
   indoor: 'INDOOR',
-  'video-gallery': 'Video Gallary'
+  'video-gallery': 'Video Gallery'
 };
 
 // Accept either database slugs or the visible category names used by the site.
@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const grid = document.querySelector('.portfolio-grid');
   const videoGallery = document.querySelector('#videoGallery');
   const videoSection = document.querySelector('.video-gallery-section');
+  const featuredVideos = document.querySelector('#featuredVideos');
+  const featuredVideoSection = document.querySelector('#featured-video-section');
   const filterBox = document.querySelector('.portfolio-filters');
   const originalGrid = grid?.innerHTML;
   const originalFilters = filterBox?.innerHTML;
@@ -68,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (isHome && grid && Array.isArray(media)) {
       const featured = media.filter(item => item.type === 'image' && item.is_featured && item.is_visible !== 0);
+      const featuredVideoItems = media.filter(item => item.type === 'video' && item.is_featured && item.is_visible !== 0);
       if (featured.length) {
         const fragment = document.createDocumentFragment();
         featured.forEach(item => {
@@ -91,6 +94,20 @@ document.addEventListener('DOMContentLoaded', async () => {
           fragment.append(card);
         });
         grid.replaceChildren(fragment);
+      }
+      if(featuredVideos&&featuredVideoSection){
+        const fragment=document.createDocumentFragment();
+        featuredVideoItems.forEach(item=>{
+          const card=document.createElement('article');card.className='video-gallery-card';
+          const title=document.createElement('h3');title.textContent=item.title||'Featured video';
+          if(item.source==='youtube'||item.source==='vimeo'){
+            const frame=document.createElement('iframe');frame.src=item.source==='youtube'?item.external_url.replace('https://www.youtube.com/watch?v=','https://www.youtube-nocookie.com/embed/'):item.external_url.replace('https://vimeo.com/','https://player.vimeo.com/video/');frame.title=item.title||'Featured video';frame.loading='lazy';frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;card.append(frame);
+          }else{
+            const video=document.createElement('video');video.src=`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;video.poster=item.poster_url||'';video.controls=true;video.playsInline=true;video.preload='metadata';card.append(video);
+          }
+          card.append(title);if(item.caption){const caption=document.createElement('p');caption.textContent=item.caption;card.append(caption);}fragment.append(card);
+        });
+        featuredVideos.replaceChildren(fragment);featuredVideoSection.hidden=featuredVideoItems.length===0;
       }
       return;
     }
@@ -205,9 +222,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       card.append(overlay);
 
       const order = Number.isFinite(Number(item.sort_order)) ? Number(item.sort_order) : renderedItems.length;
-      renderedItems.push({ item, key, order, card });
+      const pinned=item.is_pinned===1||item.is_pinned===true;
+      renderedItems.push({ item, key, order, card, pinned });
       if (!dynamicByCategory.has(key)) dynamicByCategory.set(key, []);
-      dynamicByCategory.get(key).push({ node: card, order });
+      dynamicByCategory.get(key).push({ node: card, order, pinned });
     }
 
     // If nothing could be rendered, retain the complete static HTML gallery.
@@ -215,14 +233,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // For any category with no visible/renderable API items, keep its original cards.
     const staticCategories = new Set(originalCards.map(card => categoryKey(card.dataset.category)));
-    const orderEntries = [...renderedItems.map(entry => ({ node: entry.card, order: entry.order, key: entry.key }))];
+    const orderEntries = [...renderedItems.map(entry => ({ node: entry.card, order: entry.order, key: entry.key, pinned: entry.pinned }))];
     originalCards.forEach((card, index) => {
       const key = categoryKey(card.dataset.category);
       if (!dynamicByCategory.has(key)) {
-        orderEntries.push({ node: card.cloneNode(true), order: index, key, staticFallback: true });
+        orderEntries.push({ node: card.cloneNode(true), order: index, key, pinned: false, staticFallback: true });
       }
     });
-    orderEntries.sort((a, b) => a.order - b.order || Number(Boolean(a.staticFallback)) - Number(Boolean(b.staticFallback)));
+    orderEntries.sort((a, b) => Number(Boolean(b.pinned))-Number(Boolean(a.pinned)) || a.order - b.order || Number(Boolean(a.staticFallback)) - Number(Boolean(b.staticFallback)));
 
     // Keep the familiar filter labels while matching by stable database category slugs.
     if (filterBox) {
@@ -244,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         button.className = 'filter-btn';
         button.dataset.filter = key;
         button.append(document.createTextNode(CATEGORY_LABELS[key] || originalFilterLabels.get(key) || categoryByKey.get(key)?.name || key));
-        const count=document.createElement('span');count.className='filter-count';count.textContent=String(orderEntries.filter(entry=>entry.key===key).length);button.append(count);
+        const count=document.createElement('span');count.className='filter-count';count.textContent=String(key==='video-gallery'?media.filter(item=>item.type==='video').length:orderEntries.filter(entry=>entry.key===key).length);button.append(count);
         filters.append(button);
       }
       filterBox.replaceChildren(filters);
