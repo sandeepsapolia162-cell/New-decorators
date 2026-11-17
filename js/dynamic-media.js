@@ -3,7 +3,8 @@ const CATEGORY_LABELS = {
   'front-gate': 'Entrance',
   walkway: 'WALKWAY',
   ceiling: 'Draping',
-  indoor: 'INDOOR'
+  indoor: 'INDOOR',
+  'video-gallery': 'Video Gallary'
 };
 
 // Accept either database slugs or the visible category names used by the site.
@@ -16,7 +17,9 @@ function categoryKey(value) {
     walkway: 'walkway',
     draping: 'ceiling',
     ceiling: 'ceiling',
-    indoor: 'indoor'
+    indoor: 'indoor',
+    'video-gallery': 'video-gallery',
+    'video-gallary': 'video-gallery'
   };
   return aliases[key] || key;
 }
@@ -41,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addCount=(button,count)=>{const badge=document.createElement('span');badge.className='filter-count';badge.textContent=String(count);button.append(badge);};
     if(!filterBox.querySelector('[data-filter="all"]')){const all=document.createElement('button');all.className='filter-btn';all.dataset.filter='all';all.textContent='All';filterBox.prepend(all);}
     filterBox.querySelectorAll('.filter-btn').forEach(button=>{const key=categoryKey(button.dataset.filter);if(button.querySelector('.filter-count'))return;button.textContent=button.dataset.filter==='all'?'All':(CATEGORY_LABELS[key]||button.textContent.trim());addCount(button,button.dataset.filter==='all'?originalCards.length:originalCards.filter(card=>categoryKey(card.dataset.category)===key).length);});
-    filterBox.addEventListener('click',event=>{const button=event.target.closest('.filter-btn');if(!button)return;filterBox.querySelectorAll('.filter-btn').forEach(item=>item.classList.toggle('active',item===button));grid.querySelectorAll('.portfolio-item').forEach(card=>card.hidden=button.dataset.filter!=='all'&&categoryKey(card.dataset.category)!==button.dataset.filter);});
+    filterBox.addEventListener('click',event=>{const button=event.target.closest('.filter-btn');if(!button)return;filterBox.querySelectorAll('.filter-btn').forEach(item=>item.classList.toggle('active',item===button));const isVideo=button.dataset.filter==='video-gallery';if(videoSection){videoSection.hidden=!isVideo;}if(grid){grid.hidden=isVideo;}if(!isVideo){grid.querySelectorAll('.portfolio-item').forEach(card=>card.hidden=button.dataset.filter!=='all'&&categoryKey(card.dataset.category)!==button.dataset.filter);}});
   }
 
   try {
@@ -255,9 +258,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // static cards. Re-run its idempotent injector after dynamic cards are in place.
     if (typeof LikeManager !== 'undefined' && typeof LikeManager.injectHearts === 'function') LikeManager.injectHearts();
 
-    const applyFilter = filter => grid.querySelectorAll('.portfolio-item').forEach(card => {
-      card.hidden = filter !== 'all' && categoryKey(card.dataset.category) !== filter;
-    });
+    const applyFilter = filter => {
+      const isVideo = filter === 'video-gallery';
+      if (videoSection) videoSection.hidden = !isVideo;
+      if (grid) grid.hidden = isVideo;
+      if (!isVideo) {
+        grid.querySelectorAll('.portfolio-item').forEach(card => {
+          card.hidden = filter !== 'all' && categoryKey(card.dataset.category) !== filter;
+        });
+      }
+    };
     filterBox?.addEventListener('click', event => {
       const button = event.target.closest('.filter-btn');
       if (!button) return;
