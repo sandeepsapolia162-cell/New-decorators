@@ -26,7 +26,7 @@ async function load(){
   role=session.user.role;login.hidden=true;app.hidden=false;message.textContent='';$('#teamPanel').hidden=role!=='admin';
   try{
     const summary=await api('/api/admin/summary');
-    $('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);$('#recent').replaceChildren();
+    $('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);const recentEl = $('#recent'); if (recentEl) recentEl.replaceChildren();
     for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;$('#recent').append(li);}
     [media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);
     fillCategories();
