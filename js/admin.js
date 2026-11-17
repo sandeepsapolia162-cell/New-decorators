@@ -1,8 +1,9 @@
 // Small dependency-free dashboard. All authority checks remain in the Pages API.
-const $=s=>document.querySelector(s), esc=s=>{const e=document.createElement('span');e.textContent=s||'';return e.innerHTML;};
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const esc=s=>{const e=document.createElement('span');e.textContent=s||'';return e.innerHTML;};
 let media=[],categories=[],role='editor',touchCard=null,touchTimer=null,touchDrag=false,cropState=null;
 let listMode=false;
-const say=t=>$('#notice').textContent=t;
+const say=t=>{const el=$('#notice');if(el)el.textContent=t;};
 const showStartupError=message=>{const panel=$('#startupError'),text=$('#startupErrorText');if(panel){if(text)text.textContent=message;panel.hidden=false;}};
 const hideStartupError=()=>{const panel=$('#startupError');if(panel)panel.hidden=true;};
 // If a later top-level dashboard statement fails, preserve an actionable message.
@@ -10,10 +11,9 @@ window.addEventListener('error',event=>showStartupError(`Dashboard script error:
 window.addEventListener('unhandledrejection',event=>showStartupError(`Dashboard startup failed: ${event.reason?.message||String(event.reason||'Unknown error')}`));
 async function api(url,options={}){const r=await fetch(url,options);let data={};try{data=await r.json();}catch{}if(!r.ok){const error=Error(data.error||`Request failed (${r.status})`);error.status=r.status;throw error;}return data;}
 const post=(url,data,method='POST')=>api(url,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-function xhrUpload(url,blob,headers,onProgress=()=>{}){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open('POST',url);for(const [k,v]of Object.entries(headers))x.setRequestHeader(k,v);x.upload.onprogress=e=>{if(e.lengthComputable)onProgress(Math.round(e.loaded/e.total*100));};x.onload=()=>{let d={};try{d=JSON.parse(x.responseText);}catch{}x.status>200&&x.status<300?resolve(d):reject(Error(d.error||`Upload failed (${x.status})`));};x.onerror=()=>reject(Error('Network error during upload'));x.send(blob);});}
+function xhrUpload(url,blob,headers,onProgress=()=>{}){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open('POST',url);for(const [k,v]of Object.entries(headers))x.setRequestHeader(k,v);x.upload.onprogress=e=>{if(e.lengthComputable)onProgress(Math.round(e.loaded/e.total*100));};x.onload=()=>{let d={};try{d=JSON.parse(x.responseText);}catch{}x.status>=200&&x.status<300?resolve(d):reject(Error(d.error||`Upload failed (${x.status})`));};x.onerror=()=>reject(Error('Network error during upload'));x.send(blob);});}
 async function load(){
   const login=$('#login'),app=$('#app'),message=$('#message');
-  // The unauthenticated state is normal: a 401 must show the login form, not a blank app.
   login.hidden=false;app.hidden=true;message.textContent='Checking your sign-in…';
   let session;
   try{session=await api('/api/admin/session');}
@@ -23,49 +23,49 @@ async function load(){
     showStartupError(`Could not check your sign-in (${error.message}). Confirm the Pages Functions and D1 binding are deployed, then reload. You can still try signing in below.`);
     return;
   }
-  role=session.user.role;login.hidden=true;app.hidden=false;message.textContent='';$('#teamPanel').hidden=role!=='admin';
+  role=session.user.role;login.hidden=true;app.hidden=false;message.textContent='';
+  const teamPanel=$('#teamPanel');if(teamPanel)teamPanel.hidden=role!=='admin';
+  const adminCat=$('#adminCategories');if(adminCat)adminCat.hidden=role!=='admin';
   try{
     const summary=await api('/api/admin/summary');
-    $('#count').textContent=summary.count;$('#storage').textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;$('#storageBar').value=Math.min(100,summary.bytes/summary.limit*100);const recentEl = $('#recent'); if (recentEl) recentEl.replaceChildren();
-    for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;$('#recent').append(li);}
+    const countEl=$('#count');if(countEl)countEl.textContent=summary.count;
+    const storageEl=$('#storage');if(storageEl)storageEl.textContent=`${(summary.bytes/1048576).toFixed(1)} MB / 500 MB`;
+    const storageBar=$('#storageBar');if(storageBar)storageBar.value=Math.min(100,summary.bytes/summary.limit*100);
+    const recentEl=$('#recent');if(recentEl){recentEl.replaceChildren();for(const entry of summary.recent||[]){const li=document.createElement('li');li.textContent=`${entry.title||'Untitled'} · ${entry.type} · ${entry.created_at}`;recentEl.append(li);}}
     [media,categories]=await Promise.all([api('/api/admin/media'),api('/api/categories')]);
     fillCategories();
     // Ensure "Video Gallery" category exists for video uploads
-    await (async()=>{
-      const exists = categories.some(c=>c.name==='Video Gallery');
-      if(!exists){
-        try{
-          await post('/api/admin/categories',{name:'Video Gallery'});
-          const refreshed=await api('/api/categories');
-          categories=refreshed;
-          fillCategories();
-          say('Created default "Video Gallery" category.');
-        }catch(e){say(`Failed to ensure Video Gallery category: ${e.message}`);}
-      }
-    })();
+    if(!categories.some(c=>c.name==='Video Gallery')){
+      try{
+        await post('/api/admin/categories',{name:'Video Gallery'});
+        categories=await api('/api/categories');
+        fillCategories();
+        say('Created default "Video Gallery" category.');
+      }catch(e){say(`Failed to ensure Video Gallery category: ${e.message}`);}
+    }
     render();
     if(role==='admin')await loadTeam();
     hideStartupError();
   }catch(error){showStartupError(`You are signed in, but dashboard data could not load (${error.message}). Check the DB binding and database schema, then reload.`);say(error.message);}
 }
 function fillCategories(){
-  const ids = ['uploadCategory','categoryFilter','bulkCategory','videoCategory'];
-  ids.forEach(id => {
-    const el = $(`#${id}`);
-    if (!el) return; // skip missing elements
-    el.innerHTML = (id === 'categoryFilter' ? '<option value="all">All categories</option>' : '') +
-      categories.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+  const ids=['uploadCategory','categoryFilter','bulkCategory','videoCategory','linkCategory'];
+  ids.forEach(id=>{
+    const el=$(`#${id}`);
+    if(!el)return;
+    el.innerHTML=(id==='categoryFilter'?'<option value="all">All categories</option>':'')+
+      categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
   });
-  document.querySelectorAll('.categorySelect').forEach(s => {
-    s.innerHTML = categories.map(c => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+  $$('.categorySelect').forEach(s=>{
+    s.innerHTML=categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
   });
 }
-function selectedIds(){return [...document.querySelectorAll('.select-item:checked')].map(x=>x.value);}
+function selectedIds(){return [...$$('.select-item:checked')].map(x=>x.value);}
 function filtered(){const q=$('#search').value.toLowerCase(),type=$('#typeFilter').value,cat=$('#categoryFilter').value,vis=$('#visibilityFilter').value;return media.filter(m=>(!q||`${m.title} ${m.caption} ${m.alt_text}`.toLowerCase().includes(q))&&(type==='all'||m.type===type)&&(cat==='all'||m.category_id===cat)&&(vis==='all'||(vis==='visible')===!!m.is_visible));}
-function render(){const box=$('#library');box.replaceChildren();box.classList.toggle('list-view',listMode);for(const item of filtered())box.append(makeCard(item));}
+function render(){const box=$('#library');if(!box)return;box.replaceChildren();box.classList.toggle('list-view',listMode);for(const item of filtered())box.append(makeCard(item));}
 function makeCard(item){const card=document.createElement('article');card.className='media-card';card.draggable=true;card.dataset.id=item.id;const check=document.createElement('input');check.type='checkbox';check.className='select-item';check.value=item.id;check.setAttribute('aria-label','Select '+(item.title||'media item'));const dragHandle=document.createElement('button');dragHandle.type='button';dragHandle.className='drag-handle';dragHandle.textContent='↕ Move';dragHandle.setAttribute('aria-label','Hold and drag to reorder');
   const preview=document.createElement(item.type==='video'?'video':'img');preview.className='media-preview';if(item.type==='video'){preview.controls=true;preview.playsInline=true;if(item.source==='youtube'||item.source==='vimeo'){const link=document.createElement('a');link.href=item.external_url;link.target='_blank';link.rel='noopener';link.textContent=`Open ${item.source} video`;card.append(dragHandle,check,link);}else{preview.src=`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;preview.poster=item.poster_url||'';card.append(dragHandle,check,preview);}}else{preview.src=item.source==='static'?item.external_url:`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;preview.alt=item.alt_text||'';card.append(dragHandle,check,preview);}
-  const title=input(item.title,'Title'),caption=input(item.caption,'Caption','textarea'),alt=input(item.alt_text,'Alt text'),category=document.createElement('select');category.innerHTML = categories.map(c=>`<option value="${esc(c.id)}" ${item.category_id===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+  const title=input(item.title,'Title'),caption=input(item.caption,'Caption','textarea'),alt=input(item.alt_text,'Alt text'),category=document.createElement('select');category.innerHTML=categories.map(c=>`<option value="${esc(c.id)}" ${item.category_id===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
   const vis=toggle('Visible',item.is_visible),featured=toggle('Feature on homepage',item.is_featured);
   featured.checked.onchange=async()=>{try{await post(`/api/admin/media/${item.id}`,{is_featured:featured.checked},'PATCH');item.is_featured=featured.checked;say(featured.checked?'Featured on the homepage.':'Removed from homepage features.');}catch(e){featured.checked=!featured.checked;say(e.message);}};
   const save=button('Save details',async()=>{await post(`/api/admin/media/${item.id}`,{title:title.value,caption:caption.value,alt_text:alt.value,category_id:category.value,is_visible:vis.checked},'PATCH');say('Saved changes.');await load();});
@@ -82,34 +82,77 @@ function metaHeader(value){const bytes=new TextEncoder().encode(JSON.stringify(v
 function convertImage(file){return new Promise((resolve,reject)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const scale=Math.min(1,1920/img.width),canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);canvas.toBlob(blob=>{URL.revokeObjectURL(url);blob?resolve({blob,width:canvas.width,height:canvas.height}):reject(Error('WebP conversion failed'));},'image/webp',.8);};img.onerror=()=>reject(Error('Could not read image'));img.src=url;});}
 function bytes(n){return n<1048576?`${Math.round(n/1024)} KB`:`${(n/1048576).toFixed(1)} MB`;}
 async function uploadImage(file,hidden=false,onProgress=()=>{}){const result=await convertImage(file),meta={type:'image',title:file.name.replace(/\.[^.]+$/,''),category_id:hidden?null:$('#uploadCategory').value,mime_type:'image/webp',width:result.width,height:result.height,hidden};const res=await xhrUpload('/api/admin/media',result.blob,{'Content-Type':'application/octet-stream','X-Media-Meta':metaHeader(meta)},onProgress);return {id:res.id,size:result.blob.size};}
-$('#loginForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await post('/api/login',{email:f.get('email'),password:f.get('password')});$('#message').textContent='Signed in.';await load();}catch(x){$('#message').textContent=x.message;}};
-$('#logout').onclick=async()=>{await api('/api/logout',{method:'POST'});location.reload();};
-$('#imageFiles').onchange=async e=>{for(const file of e.target.files){const row=document.createElement('div'),p=document.createElement('p'),bar=document.createElement('progress');bar.max=100;bar.value=0;p.textContent=`Preparing ${file.name} (${bytes(file.size)})`;row.append(p,bar);$('#imageProgress').append(row);try{const u=await uploadImage(file,false,n=>bar.value=n);p.textContent=`Uploaded ${file.name}: ${bytes(file.size)} → ${bytes(u.size)}`;bar.value=100;}catch(x){p.textContent=`${file.name}: ${x.message}`;bar.remove();}}e.target.value='';await load();};
-const dropZone=$('#imageFiles').parentElement;dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});dropZone.addEventListener('dragleave',()=>{dropZone.classList.remove('drag-over')});dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');const transfer=new DataTransfer();[...e.dataTransfer.files].forEach(f=>transfer.items.add(f));$('#imageFiles').files=transfer.files;$('#imageFiles').dispatchEvent(new Event('change',{bubbles:true}));});
-$('#linkForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{const result=await post('/api/admin/media/link',{url:f.get('url'),title:f.get('title'),category_id:f.get('category_id')});say(`Added ${result.provider} video.`);e.target.reset();await load();}catch(x){say(x.message);}};
-let posterId=null;$('#capturePoster').onclick=async()=>{const file=$('#videoFile').files[0];if(!file){say('Choose a video first.');return;}const video=document.createElement('video'),url=URL.createObjectURL(file);video.src=url;video.muted=true;video.playsInline=true;video.onloadeddata=()=>{video.currentTime=Math.min(1,video.duration/2);};video.onseeked=async()=>{try{const canvas=document.createElement('canvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;canvas.getContext('2d').drawImage(video,0,0);const blob=await new Promise(r=>canvas.toBlob(r,'image/webp',.8));const f=new File([blob],'video-poster.webp',{type:'image/webp'});posterId=(await uploadImage(f,true)).id;$('#posterPreview').textContent='Poster frame captured.';}catch(x){say(x.message);}finally{URL.revokeObjectURL(url);};};video.onerror=()=>{say('The browser could not read this video.');URL.revokeObjectURL(url);};};
-$('#uploadVideo').onclick=async()=>{const file=$('#videoFile').files[0];if(!file){say('Choose an MP4 or WebM video first.');return;}if(file.size>50*1024*1024){$('#videoProgress').textContent='That video is over 50 MB. Compress it and try again.';return;}if(!['video/mp4','video/webm'].includes(file.type)){say('Choose an MP4 or WebM file.');return;}try{$('#videoProgress').textContent='Uploading… 0%';const meta={type:'video',mime_type:file.type,title:$('#videoTitle').value||file.name,category_id:$('#videoCategory').value,thumbnail_id:posterId,poster_url:posterId?`/api/file/${posterId}`:''};await xhrUpload('/api/admin/media',file,{'Content-Type':'application/octet-stream','X-Media-Meta':metaHeader(meta)},n=>$('#videoProgress').textContent=`Uploading… ${n}%`);$('#videoProgress').textContent=`Uploaded ${file.name} (${bytes(file.size)}).`;await load();}catch(x){$('#videoProgress').textContent=x.message;}};
-$('#search').oninput=render;['typeFilter','categoryFilter','visibilityFilter'].forEach(id=>$('#'+id).onchange=render);
-$('#gridView').onclick=()=>{listMode=false;render();};$('#listView').onclick=()=>{listMode=true;render();};$('#selectAll').onchange=()=>{document.querySelectorAll('.select-item').forEach(x=>x.checked=$('#selectAll').checked);};
-document.querySelectorAll('[data-bulk]').forEach(b=>b.onclick=async()=>{const ids=selectedIds();if(!ids.length)return say('Select at least one item.');if(b.dataset.bulk==='delete'&&!confirm(`Delete ${ids.length} selected gallery item(s)?`))return;try{await post('/api/admin/bulk',{ids,action:b.dataset.bulk,category_id:$('#bulkCategory').value});await load();say('Bulk action complete.');}catch(x){say(x.message);}});
-$('#categoryForm').onsubmit=async e=>{e.preventDefault();try{await post('/api/admin/categories',{name:new FormData(e.target).get('name')});e.target.reset();await load();say('Category added.');}catch(x){say(x.message);}};
-async function renderCategories(){const box=$('#categoryList');box.replaceChildren();for(const [index,cat] of categories.entries()){const row=document.createElement('div');row.className='toolbar';const name=input(cat.name,'Category name');const rename=button('Rename',async()=>{await post(`/api/admin/categories/${cat.id}`,{name:name.value},'PATCH');await load();});const move=async to=>{if(to<0||to>=categories.length)return;const order=categories.map(x=>x.id);[order[index],order[to]]=[order[to],order[index]];await post('/api/admin/categories/reorder',{ids:order});await load();};const up=button('Move up',()=>move(index-1));const down=button('Move down',()=>move(index+1));const del=button('Delete category',async()=>{if(!confirm(`Delete category “${cat.name}”? Items in it must be moved first.`))return;await api(`/api/admin/categories/${cat.id}`,{method:'DELETE'});await load();});row.append(name,rename,up,down);if(role==='admin')row.append(del);box.append(row);}}
-async function loadTeam(){try{const users=await api('/api/admin/users'),box=$('#teamList');box.replaceChildren();for(const user of users){const row=document.createElement('div');row.className='toolbar';const label=document.createElement('span');label.textContent=user.email;const reset=document.createElement('input');reset.type='password';reset.placeholder='New password (12+ characters)';const save=button('Reset password',async()=>{await post(`/api/admin/users/${user.id}`,{password:reset.value},'PATCH');say('Editor password reset; their old sessions ended.');});const remove=button('Remove editor',async()=>{if(confirm(`Remove ${user.email}?`))await api(`/api/admin/users/${user.id}`,{method:'DELETE'});await loadTeam();});row.append(label,reset,save,remove);box.append(row);}}catch(e){say(e.message);}}
-$('#userForm').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await post('/api/admin/users',{email:f.get('email'),password:f.get('password')});e.target.reset();await loadTeam();say('Editor account added.');}catch(x){say(x.message);}};
-$('#passwordForm').onsubmit=async e=>{e.preventDefault();try{await post('/api/admin/password',{password:new FormData(e.target).get('password')});location.reload();}catch(x){say(x.message);}};
-$('#backup').onclick=async()=>{try{say('Building ZIP backup. Large libraries may take a few minutes.');const data=await api('/api/admin/export'),filesMap={};for(const item of data.media.filter(m=>m.source==='upload'))filesMap[item.id]=`uploads/${item.id}${item.mime_type==='video/mp4'?'.mp4':item.mime_type==='video/webm'?'.webm':item.mime_type==='image/png'?'.png':item.mime_type==='image/jpeg'?'.jpg':'.webp'}`;data.uploaded_files=filesMap;const files=[{name:'backup.json',bytes:new TextEncoder().encode(JSON.stringify(data,null,2))}];for(const item of data.media.filter(m=>m.source==='upload')){const r=await fetch(`/api/file/${encodeURIComponent(item.id)}`);if(!r.ok)throw Error(`Could not read ${item.title}`);files.push({name:filesMap[item.id],bytes:new Uint8Array(await r.arrayBuffer())});}const blob=zipStore(files);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sepolia-media-backup.zip';a.click();say('ZIP backup downloaded.');}catch(x){say(`Backup failed: ${x.message}`);}};
+
+// --- Event bindings (all with null-safety) ---
+const loginForm=$('#loginForm');
+if(loginForm)loginForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await post('/api/login',{email:f.get('email'),password:f.get('password')});$('#message').textContent='Signed in.';await load();}catch(x){$('#message').textContent=x.message;}};
+
+// Both logout buttons
+const logoutBtn=$('#logout');if(logoutBtn)logoutBtn.onclick=async()=>{await api('/api/logout',{method:'POST'});location.reload();};
+const logoutApp=$('#logoutApp');if(logoutApp)logoutApp.onclick=async()=>{await api('/api/logout',{method:'POST'});location.reload();};
+
+const imageFiles=$('#imageFiles');
+if(imageFiles){
+  imageFiles.onchange=async e=>{for(const file of e.target.files){const row=document.createElement('div'),p=document.createElement('p'),bar=document.createElement('progress');bar.max=100;bar.value=0;p.textContent=`Preparing ${file.name} (${bytes(file.size)})`;row.append(p,bar);$('#imageProgress').append(row);try{const u=await uploadImage(file,false,n=>bar.value=n);p.textContent=`Uploaded ${file.name}: ${bytes(file.size)} → ${bytes(u.size)}`;bar.value=100;}catch(x){p.textContent=`${file.name}: ${x.message}`;bar.remove();}}e.target.value='';await load();};
+  const dropZone=imageFiles.parentElement;
+  if(dropZone){dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over');});dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');const transfer=new DataTransfer();[...e.dataTransfer.files].forEach(f=>transfer.items.add(f));imageFiles.files=transfer.files;imageFiles.dispatchEvent(new Event('change',{bubbles:true}));});}
+}
+
+const linkForm=$('#linkForm');
+if(linkForm)linkForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{const result=await post('/api/admin/media/link',{url:f.get('url'),title:f.get('title'),category_id:f.get('category_id')});say(`Added ${result.provider} video.`);e.target.reset();await load();}catch(x){say(x.message);}};
+
+let posterId=null;
+const capturePoster=$('#capturePoster');
+if(capturePoster)capturePoster.onclick=async()=>{const file=$('#videoFile').files[0];if(!file){say('Choose a video first.');return;}const video=document.createElement('video'),url=URL.createObjectURL(file);video.src=url;video.muted=true;video.playsInline=true;video.onloadeddata=()=>{video.currentTime=Math.min(1,video.duration/2);};video.onseeked=async()=>{try{const canvas=document.createElement('canvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;canvas.getContext('2d').drawImage(video,0,0);const blob=await new Promise(r=>canvas.toBlob(r,'image/webp',.8));const f=new File([blob],'video-poster.webp',{type:'image/webp'});posterId=(await uploadImage(f,true)).id;$('#posterPreview').textContent='Poster frame captured.';}catch(x){say(x.message);}finally{URL.revokeObjectURL(url);};};video.onerror=()=>{say('The browser could not read this video.');URL.revokeObjectURL(url);};};
+
+const uploadVideoBtn=$('#uploadVideo');
+if(uploadVideoBtn)uploadVideoBtn.onclick=async()=>{const file=$('#videoFile').files[0];if(!file){say('Choose an MP4 or WebM video first.');return;}if(file.size>50*1024*1024){$('#videoProgress').textContent='That video is over 50 MB. Compress it and try again.';return;}if(!['video/mp4','video/webm'].includes(file.type)){say('Choose an MP4 or WebM file.');return;}try{$('#videoProgress').textContent='Uploading… 0%';const meta={type:'video',mime_type:file.type,title:$('#videoTitle').value||file.name,category_id:$('#videoCategory').value,thumbnail_id:posterId,poster_url:posterId?`/api/file/${posterId}`:''};await xhrUpload('/api/admin/media',file,{'Content-Type':'application/octet-stream','X-Media-Meta':metaHeader(meta)},n=>$('#videoProgress').textContent=`Uploading… ${n}%`);$('#videoProgress').textContent=`Uploaded ${file.name} (${bytes(file.size)}).`;await load();}catch(x){$('#videoProgress').textContent=x.message;}};
+
+const searchEl=$('#search');if(searchEl)searchEl.oninput=render;
+['typeFilter','categoryFilter','visibilityFilter'].forEach(id=>{const el=$('#'+id);if(el)el.onchange=render;});
+const gridView=$('#gridView');if(gridView)gridView.onclick=()=>{listMode=false;render();};
+const listView=$('#listView');if(listView)listView.onclick=()=>{listMode=true;render();};
+const selectAll=$('#selectAll');if(selectAll)selectAll.onchange=()=>{$$('.select-item').forEach(x=>x.checked=selectAll.checked);};
+
+$$('[data-bulk]').forEach(b=>b.onclick=async()=>{const ids=selectedIds();if(!ids.length)return say('Select at least one item.');if(b.dataset.bulk==='delete'&&!confirm(`Delete ${ids.length} selected gallery item(s)?`))return;const bulkCat=$('#bulkCategory');try{await post('/api/admin/bulk',{ids,action:b.dataset.bulk,category_id:bulkCat?bulkCat.value:null});await load();say('Bulk action complete.');}catch(x){say(x.message);}});
+
+const categoryForm=$('#categoryForm');
+if(categoryForm)categoryForm.onsubmit=async e=>{e.preventDefault();try{await post('/api/admin/categories',{name:new FormData(e.target).get('name')});e.target.reset();await load();say('Category added.');}catch(x){say(x.message);}};
+
+async function renderCategories(){const box=$('#categoryList');if(!box)return;box.replaceChildren();for(const [index,cat] of categories.entries()){const row=document.createElement('div');row.className='toolbar';const name=input(cat.name,'Category name');const rename=button('Rename',async()=>{await post(`/api/admin/categories/${cat.id}`,{name:name.value},'PATCH');await load();});const move=async to=>{if(to<0||to>=categories.length)return;const order=categories.map(x=>x.id);[order[index],order[to]]=[order[to],order[index]];await post('/api/admin/categories/reorder',{ids:order});await load();};const up=button('Move up',()=>move(index-1));const down=button('Move down',()=>move(index+1));const del=button('Delete category',async()=>{if(!confirm(`Delete category "${cat.name}"? Items in it must be moved first.`))return;await api(`/api/admin/categories/${cat.id}`,{method:'DELETE'});await load();});row.append(name,rename,up,down);if(role==='admin')row.append(del);box.append(row);}}
+
+async function loadTeam(){try{const users=await api('/api/admin/users'),box=$('#teamList');if(!box)return;box.replaceChildren();for(const user of users){const row=document.createElement('div');row.className='toolbar';const label=document.createElement('span');label.textContent=user.email;const reset=document.createElement('input');reset.type='password';reset.placeholder='New password (12+ characters)';const save=button('Reset password',async()=>{await post(`/api/admin/users/${user.id}`,{password:reset.value},'PATCH');say('Editor password reset; their old sessions ended.');});const remove=button('Remove editor',async()=>{if(confirm(`Remove ${user.email}?`))await api(`/api/admin/users/${user.id}`,{method:'DELETE'});await loadTeam();});row.append(label,reset,save,remove);box.append(row);}}catch(e){say(e.message);}}
+
+const userForm=$('#userForm');
+if(userForm)userForm.onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);try{await post('/api/admin/users',{email:f.get('email'),password:f.get('password')});e.target.reset();await loadTeam();say('Editor account added.');}catch(x){say(x.message);}};
+
+const passwordForm=$('#passwordForm');
+if(passwordForm)passwordForm.onsubmit=async e=>{e.preventDefault();try{await post('/api/admin/password',{password:new FormData(e.target).get('password')});location.reload();}catch(x){say(x.message);}};
+
+const backupBtn=$('#backup');
+if(backupBtn)backupBtn.onclick=async()=>{try{say('Building ZIP backup. Large libraries may take a few minutes.');const data=await api('/api/admin/export'),filesMap={};for(const item of data.media.filter(m=>m.source==='upload'))filesMap[item.id]=`uploads/${item.id}${item.mime_type==='video/mp4'?'.mp4':item.mime_type==='video/webm'?'.webm':item.mime_type==='image/png'?'.png':item.mime_type==='image/jpeg'?'.jpg':'.webp'}`;data.uploaded_files=filesMap;const files=[{name:'backup.json',bytes:new TextEncoder().encode(JSON.stringify(data,null,2))}];for(const item of data.media.filter(m=>m.source==='upload')){const r=await fetch(`/api/file/${encodeURIComponent(item.id)}`);if(!r.ok)throw Error(`Could not read ${item.title}`);files.push({name:filesMap[item.id],bytes:new Uint8Array(await r.arrayBuffer())});}const blob=zipStore(files);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sepolia-media-backup.zip';a.click();say('ZIP backup downloaded.');}catch(x){say(`Backup failed: ${x.message}`);}};
+
 function zipStore(files){const enc=new TextEncoder(),parts=[],central=[];let offset=0;const crc32=data=>{let c=0xffffffff;for(const byte of data){c^=byte;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0);}return(c^0xffffffff)>>>0;};for(const f of files){const name=enc.encode(f.name),data=f.bytes,crc=crc32(data),head=new Uint8Array(30+name.length),v=new DataView(head.buffer);v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(6,0x800,true);v.setUint16(8,0,true);v.setUint32(14,crc,true);v.setUint32(18,data.length,true);v.setUint32(22,data.length,true);v.setUint16(26,name.length,true);head.set(name,30);parts.push(head,data);const dir=new Uint8Array(46+name.length),d=new DataView(dir.buffer);d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint16(8,0x800,true);d.setUint16(10,0,true);d.setUint32(16,crc,true);d.setUint32(20,data.length,true);d.setUint32(24,data.length,true);d.setUint16(28,name.length,true);d.setUint32(42,offset,true);dir.set(name,46);central.push(dir);offset+=head.length+data.length;}const centralSize=central.reduce((n,x)=>n+x.length,0),end=new Uint8Array(22),e=new DataView(end.buffer);e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);return new Blob([...parts,...central,end],{type:'application/zip'});}
-$('#restoreZip').onchange=async()=>{const file=$('#restoreZip').files[0];if(!file)return;if(!confirm('Restore items from this dashboard ZIP? Existing matching IDs will be skipped.'))return;try{say('Reading backup…');const raw=new Uint8Array(await file.arrayBuffer()),view=new DataView(raw.buffer,raw.byteOffset,raw.byteLength),decoder=new TextDecoder(),entries=new Map();let p=0;while(p+30<raw.length&&view.getUint32(p,true)===0x04034b50){const method=view.getUint16(p+8,true),size=view.getUint32(p+18,true),nameLength=view.getUint16(p+26,true),extra=view.getUint16(p+28,true),name=decoder.decode(raw.slice(p+30,p+30+nameLength)),start=p+30+nameLength+extra;if(method!==0)throw Error('Choose an uncompressed ZIP made by this dashboard.');entries.set(name,raw.slice(start,start+size));p=start+size;}const backup=entries.get('backup.json');if(!backup)throw Error('ZIP does not contain backup.json.');const data=JSON.parse(decoder.decode(backup)),map={};for(const c of data.categories||[]){const result=await post('/api/admin/restore/category',c);map[c.id]=result.id;}let count=0;for(const original of data.media||[]){const item={...original,category_id:map[original.category_id]||null};if(original.source==='upload'){const fileBytes=entries.get(data.uploaded_files?.[original.id]);if(!fileBytes)throw Error(`Backup is missing the file for ${original.title||original.id}`);const r=await fetch('/api/admin/restore/item',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Media-Meta':metaHeader(item)},body:fileBytes});const result=await r.json();if(!r.ok)throw Error(result.error||'Restore failed');}else await post('/api/admin/restore/item',item);count++;}say(`Restore finished; processed ${count} items.`);await load();}catch(e){say(`Restore failed: ${e.message}`);}finally{$('#restoreZip').value='';}};
-// Lightweight crop/rotate editor, exporting WebP and replacing this gallery item.
-const canvas=$('#cropCanvas'),ctx=canvas.getContext('2d');let sourceImage=null,selection=null,dragStart=null,rotation=0,cropItem=null;
-function drawCrop(){if(!sourceImage)return;const swap=rotation%180!==0,scale=Math.min(1,760/(swap?sourceImage.height:sourceImage.width),500/(swap?sourceImage.width:sourceImage.height));canvas.width=Math.round((swap?sourceImage.height:sourceImage.width)*scale);canvas.height=Math.round((swap?sourceImage.width:sourceImage.height)*scale);ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);ctx.drawImage(sourceImage,-sourceImage.width*scale/2,-sourceImage.height*scale/2,sourceImage.width*scale,sourceImage.height*scale);ctx.restore();if(selection){ctx.strokeStyle='#c5a880';ctx.lineWidth=3;ctx.strokeRect(selection.x,selection.y,selection.w,selection.h);}}
+
+const restoreZip=$('#restoreZip');
+if(restoreZip)restoreZip.onchange=async()=>{const file=restoreZip.files[0];if(!file)return;if(!confirm('Restore items from this dashboard ZIP? Existing matching IDs will be skipped.'))return;try{say('Reading backup…');const raw=new Uint8Array(await file.arrayBuffer()),view=new DataView(raw.buffer,raw.byteOffset,raw.byteLength),decoder=new TextDecoder(),entries=new Map();let p=0;while(p+30<raw.length&&view.getUint32(p,true)===0x04034b50){const method=view.getUint16(p+8,true),size=view.getUint32(p+18,true),nameLength=view.getUint16(p+26,true),extra=view.getUint16(p+28,true),name=decoder.decode(raw.slice(p+30,p+30+nameLength)),start=p+30+nameLength+extra;if(method!==0)throw Error('Choose an uncompressed ZIP made by this dashboard.');entries.set(name,raw.slice(start,start+size));p=start+size;}const backup=entries.get('backup.json');if(!backup)throw Error('ZIP does not contain backup.json.');const data=JSON.parse(decoder.decode(backup)),map={};for(const c of data.categories||[]){const result=await post('/api/admin/restore/category',c);map[c.id]=result.id;}let count=0;for(const original of data.media||[]){const item={...original,category_id:map[original.category_id]||null};if(original.source==='upload'){const fileBytes=entries.get(data.uploaded_files?.[original.id]);if(!fileBytes)throw Error(`Backup is missing the file for ${original.title||original.id}`);const r=await fetch('/api/admin/restore/item',{method:'POST',headers:{'Content-Type':'application/octet-stream','X-Media-Meta':metaHeader(item)},body:fileBytes});const result=await r.json();if(!r.ok)throw Error(result.error||'Restore failed');}else await post('/api/admin/restore/item',item);count++;}say(`Restore finished; processed ${count} items.`);await load();}catch(e){say(`Restore failed: ${e.message}`);}finally{restoreZip.value='';}};
+
+// Lightweight crop/rotate editor
+const canvas=$('#cropCanvas'),ctx=canvas?canvas.getContext('2d'):null;let sourceImage=null,selection=null,dragStart=null,rotation=0,cropItem=null;
+function drawCrop(){if(!sourceImage||!ctx)return;const swap=rotation%180!==0,scale=Math.min(1,760/(swap?sourceImage.height:sourceImage.width),500/(swap?sourceImage.width:sourceImage.height));canvas.width=Math.round((swap?sourceImage.height:sourceImage.width)*scale);canvas.height=Math.round((swap?sourceImage.width:sourceImage.height)*scale);ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);ctx.drawImage(sourceImage,-sourceImage.width*scale/2,-sourceImage.height*scale/2,sourceImage.width*scale,sourceImage.height*scale);ctx.restore();if(selection){ctx.strokeStyle='#c5a880';ctx.lineWidth=3;ctx.strokeRect(selection.x,selection.y,selection.w,selection.h);}}
 async function openCrop(item){cropItem=item;rotation=0;selection=null;const image=new Image();image.crossOrigin='anonymous';image.onload=()=>{sourceImage=image;drawCrop();$('#cropDialog').showModal();};image.onerror=()=>say('Could not open this image for editing.');image.src=item.source==='static'?item.external_url:`/api/file/${item.id}`;}
-canvas.onpointerdown=e=>{const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;dragStart={x,y};selection={x,y,w:0,h:0};canvas.setPointerCapture(e.pointerId);drawCrop();};
-canvas.onpointermove=e=>{if(!dragStart)return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;selection={x:Math.min(x,dragStart.x),y:Math.min(y,dragStart.y),w:Math.abs(x-dragStart.x),h:Math.abs(y-dragStart.y)};drawCrop();};
-canvas.onpointerup=()=>{dragStart=null;};
-$('#rotateImage').onclick=()=>{rotation=(rotation+90)%360;selection=null;drawCrop();};
-$('#resetCrop').onclick=()=>{selection=null;rotation=0;drawCrop();};
-$('#saveCrop').onclick=async()=>{try{const out=document.createElement('canvas'),rot=rotation*Math.PI/180,swap=rotation%180!==0,w=swap?sourceImage.height:sourceImage.width,h=swap?sourceImage.width:sourceImage.height,sc=Math.min(1,760/(swap?sourceImage.height:sourceImage.width),500/(swap?sourceImage.width:sourceImage.height));let sx=0,sy=0,sw=canvas.width,sh=canvas.height;if(selection&&selection.w>8&&selection.h>8){sx=selection.x;sy=selection.y;sw=selection.w;sh=selection.h;}const rotated=document.createElement('canvas');rotated.width=w;rotated.height=h;const rc=rotated.getContext('2d');rc.translate(w/2,h/2);rc.rotate(rot);rc.drawImage(sourceImage,-sourceImage.width/2,-sourceImage.height/2);out.width=Math.round(sw/sc);out.height=Math.round(sh/sc);const c=out.getContext('2d');c.drawImage(rotated,sx/sc,sy/sc,sw/sc,sh/sc,0,0,out.width,out.height);const blob=await new Promise(r=>out.toBlob(r,'image/webp',.82));const file=new File([blob],'edited.webp',{type:'image/webp'});await replaceMedia(cropItem,file);$('#cropDialog').close();}catch(e){say(e.message);}};
+if(canvas){
+  canvas.onpointerdown=e=>{const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;dragStart={x,y};selection={x,y,w:0,h:0};canvas.setPointerCapture(e.pointerId);drawCrop();};
+  canvas.onpointermove=e=>{if(!dragStart)return;const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;selection={x:Math.min(x,dragStart.x),y:Math.min(y,dragStart.y),w:Math.abs(x-dragStart.x),h:Math.abs(y-dragStart.y)};drawCrop();};
+  canvas.onpointerup=()=>{dragStart=null;};
+}
+const rotateBtn=$('#rotateImage');if(rotateBtn)rotateBtn.onclick=()=>{rotation=(rotation+90)%360;selection=null;drawCrop();};
+const resetCropBtn=$('#resetCrop');if(resetCropBtn)resetCropBtn.onclick=()=>{selection=null;rotation=0;drawCrop();};
+const saveCropBtn=$('#saveCrop');
+if(saveCropBtn)saveCropBtn.onclick=async()=>{try{const out=document.createElement('canvas'),rot=rotation*Math.PI/180,swap=rotation%180!==0,w=swap?sourceImage.height:sourceImage.width,h=swap?sourceImage.width:sourceImage.height,sc=Math.min(1,760/(swap?sourceImage.height:sourceImage.width),500/(swap?sourceImage.width:sourceImage.height));let sx=0,sy=0,sw=canvas.width,sh=canvas.height;if(selection&&selection.w>8&&selection.h>8){sx=selection.x;sy=selection.y;sw=selection.w;sh=selection.h;}const rotated=document.createElement('canvas');rotated.width=w;rotated.height=h;const rc=rotated.getContext('2d');rc.translate(w/2,h/2);rc.rotate(rot);rc.drawImage(sourceImage,-sourceImage.width/2,-sourceImage.height/2);out.width=Math.round(sw/sc);out.height=Math.round(sh/sc);const c=out.getContext('2d');c.drawImage(rotated,sx/sc,sy/sc,sw/sc,sh/sc,0,0,out.width,out.height);const blob=await new Promise(r=>out.toBlob(r,'image/webp',.82));const file=new File([blob],'edited.webp',{type:'image/webp'});await replaceMedia(cropItem,file);$('#cropDialog').close();}catch(e){say(e.message);}};
+
 async function replaceMedia(item,file){try{if(item.type==='video'){if(file.size>50*1024*1024)throw Error('Video is over 50 MB. Compress it and try again.');if(!['video/mp4','video/webm'].includes(file.type))throw Error('Choose an MP4 or WebM file.');const r=await fetch(`/api/admin/media/${item.id}/replace`,{method:'POST',headers:{'Content-Type':file.type,'X-Media-Meta':metaHeader({})},body:file});const d=await r.json();if(!r.ok)throw Error(d.error||'Replacement failed');}else{const result=await convertImage(file);await post(`/api/admin/media/${item.id}/replace`,{data:await fileData(result.blob),mime_type:'image/webp',width:result.width,height:result.height});}say('File replaced.');await load();}catch(e){say(e.message);}}
+
+// Category controls are rendered after the initial API load.
 const originalLoad=load;load=async()=>{await originalLoad();if(!$('#app').hidden)await renderCategories();};
 (async()=>{try{await load();}catch(error){showStartupError(`Dashboard could not start: ${error?.message||String(error)}. Reload the page or check the browser console.`);}})();

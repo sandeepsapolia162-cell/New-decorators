@@ -50,7 +50,7 @@
   <section id="app" hidden>
     <header>
       <h1>Media dashboard</h1>
-      <button id="logout" class="btn btn-dark">Sign out</button>
+      <button id="logoutApp" class="btn btn-dark">Sign out</button>
     </header>
     <div class="stats">
       <article class="panel"><span>Gallery items</span> <strong id="count">0</strong></article>
@@ -58,6 +58,7 @@
     </div>
 
     <ul id="recent" class="admin-recent"></ul>
+
     <!-- Image upload -->
     <section class="panel">
       <h2>Upload images</h2>
@@ -86,9 +87,28 @@
       <p id="videoProgress" role="status"></p>
     </section>
 
+    <!-- Add video link (YouTube / Vimeo) -->
+    <section class="panel">
+      <h2>Add video link</h2>
+      <form id="linkForm" class="actions">
+        <input name="url" type="url" placeholder="YouTube or Vimeo URL" required>
+        <input name="title" placeholder="Title (optional)" maxlength="200">
+        <select name="category_id" id="linkCategory"></select>
+        <button class="btn btn-primary">Add video link</button>
+      </form>
+    </section>
+
     <!-- Media library -->
     <section class="panel">
       <h2>Media library</h2>
+      <div class="toolbar">
+        <label><input id="selectAll" type="checkbox"> Select all</label>
+        <select id="bulkCategory"></select>
+        <button class="btn btn-dark" data-bulk="move">Move selected</button>
+        <button class="btn btn-dark" data-bulk="show">Show selected</button>
+        <button class="btn btn-dark" data-bulk="hide">Hide selected</button>
+        <button class="btn btn-dark" data-bulk="delete">Delete selected</button>
+      </div>
       <div class="toolbar">
         <input id="search" type="search" placeholder="Search…">
         <select id="typeFilter"><option value="all">All types</option><option value="image">Images</option><option value="video">Videos</option></select>
@@ -98,6 +118,17 @@
         <button id="listView" class="btn btn-dark">List</button>
       </div>
       <div id="library" class="library"></div>
+    </section>
+
+    <!-- Backup & Restore -->
+    <section class="panel">
+      <h2>Backup &amp; Restore</h2>
+      <div class="actions">
+        <button id="backup" class="btn btn-dark" type="button">Download ZIP backup</button>
+        <label class="btn btn-dark file-button">Restore from ZIP
+          <input id="restoreZip" type="file" accept=".zip" hidden>
+        </label>
+      </div>
     </section>
 
     <!-- Category management (admin only) -->
