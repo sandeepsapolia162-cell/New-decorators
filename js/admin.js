@@ -1,6 +1,5 @@
 // Small dependency-free dashboard. All authority checks remain in the Pages API.
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const esc=s=>{const e=document.createElement('span');e.textContent=s||'';return e.innerHTML;};
 let media=[],categories=[],role='editor',touchCard=null,touchTimer=null,touchDrag=false,cropState=null;
 let listMode=false;
 let editingVideo=null,videoSourceUrl=null,ffmpegInstance=null,ffmpegLoading=null;
@@ -50,6 +49,7 @@ async function load(){
       catch(e){say(`Could not create the Video Gallery category: ${e.message}`);}
     }
     fillCategories();
+    renderOverviewPhotos(media);
     render();
     if(role==='admin')await loadTeam();
     hideStartupError();
@@ -60,19 +60,31 @@ function fillCategories(){
   ids.forEach(id=>{
     const el=$(`#${id}`);
     if(!el)return;
-    el.innerHTML=(id==='categoryFilter'?'<option value="all">All categories</option>':'')+
-      categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+    const options=id==='categoryFilter'?[{value:'all',label:'All categories'},...categories.map(c=>({value:c.id,label:c.name}))]:categories.map(c=>({value:c.id,label:c.name}));
+    setSelectOptions(el,options);
   });
-  $$('.categorySelect').forEach(s=>{
-    s.innerHTML=categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
-  });
+  $$('.categorySelect').forEach(s=>setSelectOptions(s,categories.map(c=>({value:c.id,label:c.name}))));
   const gallery=categories.find(c=>c.name?.trim().toLowerCase()==='video gallery')||categories.find(isVideoGalleryCategory);
-  ['videoCategory','linkCategory'].forEach(id=>{const el=$(`#${id}`);if(el)el.innerHTML=gallery?`<option value="${esc(gallery.id)}">Video Gallery</option>`:'<option value="">Video Gallery category unavailable</option>';});
+  ['videoCategory','linkCategory'].forEach(id=>{const el=$(`#${id}`);if(el)setSelectOptions(el,[{value:gallery?.id||'',label:gallery?'Video Gallery':'Video Gallery category unavailable'}]);});
 }
+function setSelectOptions(select,items){if(!select)return;select.replaceChildren(...items.map(item=>{const option=document.createElement('option');option.value=item.value||'';option.textContent=item.label||'';option.selected=!!item.selected;return option;}));}
 function videoGalleryId(){return categories.find(c=>c.name?.trim().toLowerCase()==='video gallery')?.id||categories.find(isVideoGalleryCategory)?.id||null;}
 function selectedIds(){return [...$$('.select-item:checked')].map(x=>x.value);}
 function filtered(){const q=$('#search').value.toLowerCase(),type=$('#typeFilter').value,cat=$('#categoryFilter').value,vis=$('#visibilityFilter').value;return media.filter(m=>(!q||`${m.title} ${m.caption} ${m.alt_text}`.toLowerCase().includes(q))&&(type==='all'||m.type===type)&&(cat==='all'||m.category_id===cat)&&(vis==='all'||(vis==='visible')===!!m.is_visible));}
 function render(){const box=$('#library');if(!box)return;box.replaceChildren();box.classList.toggle('list-view',listMode);const items=filtered();for(const item of items)box.append(makeCard(item));const empty=$('#emptyLibrary');if(empty)empty.hidden=items.length>0;}
+function renderOverviewPhotos(items){
+  const grid=$('#overviewPhotos'),empty=$('#overviewPhotosEmpty');if(!grid)return;
+  const photos=items.filter(item=>item.type==='image').slice().sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||''))).slice(0,6);
+  grid.replaceChildren();if(empty)empty.hidden=photos.length>0;
+  photos.forEach(item=>{
+    const card=document.createElement('article');card.className='overview-photo-card';
+    const image=document.createElement('img');image.loading='lazy';image.decoding='async';image.alt=item.alt_text||item.title||'Portfolio photo';image.src=item.source==='static'?item.external_url:`/api/file/${encodeURIComponent(item.id)}?v=${encodeURIComponent(item.updated_at||'1')}`;
+    const caption=document.createElement('div');caption.className='overview-photo-caption';
+    const title=document.createElement('strong');title.textContent=item.title||'Untitled photo';
+    const visibility=document.createElement('small');visibility.textContent=item.is_visible?'Visible on portfolio':'Hidden from portfolio';
+    caption.append(title,visibility);card.append(image,caption);grid.append(card);
+  });
+}
 function makeCard(item){
   const card=document.createElement('article');card.className='media-card';card.draggable=true;card.dataset.id=item.id;
   const check=document.createElement('input');check.type='checkbox';check.className='select-item';check.value=item.id;check.setAttribute('aria-label','Select '+(item.title||'media item'));
@@ -91,7 +103,7 @@ function makeCard(item){
   let category=null;
   if(item.type==='image'){
     category=document.createElement('select');category.setAttribute('aria-label','Photo category');
-    category.innerHTML=categories.filter(c=>!isVideoGalleryCategory(c)).map(c=>`<option value="${esc(c.id)}" ${item.category_id===c.id?'selected':''}>${esc(c.name)}</option>`).join('');details.append(category);
+    setSelectOptions(category,categories.filter(c=>!isVideoGalleryCategory(c)).map(c=>({value:c.id,label:c.name,selected:item.category_id===c.id})));details.append(category);
   }
   const vis=toggle('Visible on portfolio',item.is_visible),featured=toggle(item.type==='video'?'Feature video on homepage':'Feature photo on homepage',item.is_featured);
   const flags=document.createElement('div');flags.className='media-flags';flags.append(vis.label,featured.label);

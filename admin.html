@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Media Dashboard | Sepolia Decorators</title>
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/admin.css?v=admin-visible-20261117">
+  <link rel="stylesheet" href="/css/admin.css?v=admin-visible-20261117-2">
   <style>
     body.admin-body{opacity:1!important;visibility:visible!important}
     body.admin-body #login:not([hidden]){display:grid!important;opacity:1!important;visibility:visible!important}
@@ -80,6 +80,12 @@
       <p class="tip">Pinned photos rise to the top of their category and the All view. Featured videos appear in their own section on the home page.</p>
       <h3 class="subheading">Recently added</h3>
       <ul id="recent" class="admin-recent"></ul>
+      <div class="panel-heading overview-photo-heading">
+        <h3 class="subheading">Latest photos</h3>
+        <button class="btn btn-quiet" type="button" data-open-dashboard-tab="library">Open photo library</button>
+      </div>
+      <div id="overviewPhotos" class="overview-photo-grid" aria-label="Latest photos"></div>
+      <p id="overviewPhotosEmpty" class="tip" hidden>No photos have been added yet.</p>
     </section>
 
     <section class="dashboard-panel" data-dashboard-panel="upload" role="tabpanel" hidden>
@@ -221,6 +227,6 @@
     <button id="saveCrop" class="btn btn-primary" type="button">Save edited photo</button>
   </div>
 </dialog>
-<script src="/js/admin.js" defer></script>
+<script src="/js/admin.js?v=admin-init-20261117-2" defer></script>
 </body>
 </html>
