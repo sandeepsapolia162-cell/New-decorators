@@ -8,25 +8,39 @@
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/admin.css">
   <style>
-    /* Simplified layout tweaks */
-    .dash {max-width:1200px;margin:auto;padding:1rem;}
-    header {display:flex;justify-content:space-between;align-items:center;}
-    .stats {display:flex;gap:2rem;margin:1rem 0;}
-    .panel {margin-bottom:2rem;background:#fff;padding:1rem;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
-    .toolbar {display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem;}
-    #library.grid-view .media-card {width:calc(33% - 1rem);margin:0.5rem;}
-    #library.list-view .media-card {width:100%;margin:0.5rem 0;}
+    body, body.admin-body { opacity: 1 !important; visibility: visible !important; animation: none !important; transition: none !important; }
   </style>
 </head>
 <body class="admin-body">
 <main class="dash">
-  <!-- Login -->
+  <header>
+    <div>
+      <p class="eyebrow">SEPOLIA DECORATORS</p>
+      <h1>Media dashboard</h1>
+    </div>
+    <div class="actions">
+      <a class="btn btn-dark" href="/portfolio.html">View website</a>
+      <button id="logout" class="btn btn-dark" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <section id="startupError" class="admin-error" role="alert" aria-live="assertive">
+    <h2>Dashboard is starting</h2>
+    <p id="startupErrorText">If this message stays here, the dashboard script or API did not load. The sign-in form is still available below.</p>
+  </section>
+  <noscript>
+    <section class="admin-error" role="alert">
+      <h2>JavaScript is turned off</h2>
+      <p>The sign-in form is shown, but the dashboard needs JavaScript enabled to contact the secure sign-in service.</p>
+    </section>
+  </noscript>
+
   <section id="login" class="panel" aria-labelledby="loginHeading">
     <h2 id="loginHeading">Sign in</h2>
     <form id="loginForm">
       <label>Email <input name="email" type="email" required autocomplete="username"></label>
       <label>Password <input name="password" type="password" required autocomplete="current-password"></label>
-      <button type="submit" class="btn btn-primary">Sign in</button>
+      <button class="btn btn-primary" type="submit">Sign in</button>
       <p id="message" role="status" aria-live="polite"></p>
     </form>
     <a href="/admin/setup">First‑time setup</a>
@@ -118,6 +132,19 @@
     <p id="notice" role="status"></p>
   </section>
 </main>
+<dialog id="cropDialog" class="crop-dialog">
+  <form method="dialog">
+    <button class="viewer-close" aria-label="Close">×</button>
+  </form>
+  <h2>Crop or rotate image</h2>
+  <p>Drag over the image to choose a crop area, or rotate before saving.</p>
+  <canvas id="cropCanvas"></canvas>
+  <div class="actions">
+    <button id="rotateImage" class="btn btn-dark" type="button">Rotate 90°</button>
+    <button id="resetCrop" class="btn btn-dark" type="button">Reset crop</button>
+    <button id="saveCrop" class="btn btn-primary" type="button">Save cropped image</button>
+  </div>
+</dialog>
 <script src="/js/admin.js" defer></script>
 </body>
 </html>
