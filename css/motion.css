@@ -31,6 +31,10 @@
   pointer-events: auto;
 }
 
+.page-transition-screen.is-loading { opacity: 1; visibility: visible; pointer-events: auto; transition: none; }
+.page-transition-screen.is-loading .loader-emblem { animation: emblem-arrive .9s cubic-bezier(.2,.8,.2,1) both, emblem-glow 2.2s 1s ease-in-out infinite; }
+.page-transition-screen.is-loading .loader-brand { animation: brand-arrive .8s .15s both; }
+
 .page-transition-screen.is-entering {
   animation: pageScreenReveal .62s .04s cubic-bezier(.22,.68,0,1) both;
 }

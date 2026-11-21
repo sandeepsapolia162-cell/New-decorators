@@ -16,20 +16,24 @@
   screen.append(emblem, brand, line);
   document.body.append(screen);
 
-  const revealPage = () => {
-    screen.classList.remove('is-leaving');
-    screen.classList.add('is-entering');
-    window.setTimeout(() => screen.classList.remove('is-entering'), reducedMotion ? 0 : 700);
+  let navigationStarted = false;
+  const hideScreen = () => {
+    screen.classList.remove('is-leaving', 'is-entering', 'is-loading');
   };
-
-  if (reducedMotion) {
-    screen.remove();
-  } else {
-    revealPage();
-  }
+  // Fast first visits never flash a loader. If the document is still waiting
+  // after a second, keep the branded screen up until all blocking resources load.
+  const initialLoader = window.setTimeout(() => {
+    if (document.readyState !== 'complete' && !navigationStarted) {
+      screen.classList.add('is-loading');
+    }
+  }, 1000);
+  window.addEventListener('load', () => {
+    window.clearTimeout(initialLoader);
+    hideScreen();
+  }, { once: true });
 
   document.addEventListener('click', event => {
-    if (reducedMotion || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
     const link = event.target.closest('a[href]');
     if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
@@ -40,13 +44,14 @@
     if (destination.pathname === window.location.pathname && destination.search === window.location.search && destination.hash) return;
 
     event.preventDefault();
-    screen.classList.remove('is-entering');
+    navigationStarted = true;
+    screen.classList.remove('is-loading', 'is-entering');
     screen.classList.add('is-leaving');
-    window.setTimeout(() => window.location.assign(destination.href), 350);
+    const slowTimer = window.setTimeout(() => screen.classList.add('is-loading'), 1000);
+    window.setTimeout(() => window.location.assign(destination.href), reducedMotion ? 0 : 380);
   });
 
   window.addEventListener('pageshow', event => {
-    if (!event.persisted || reducedMotion) return;
-    revealPage();
+    if (event.persisted) hideScreen();
   });
 })();
