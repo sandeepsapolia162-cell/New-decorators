@@ -1,4 +1,4 @@
-/* Lightweight page-to-page loading transition for the public website. */
+/* Smart adaptive loader + directional flow transitions for Sepolia Decorators. */
 .page-transition-screen {
   position: fixed;
   inset: 0;
@@ -11,74 +11,147 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity .38s cubic-bezier(.22,.68,0,1), visibility 0s linear .38s;
+  transition: opacity .36s cubic-bezier(.22, .68, 0, 1), visibility 0s linear .36s;
 }
 
-.sepolia-loader { gap: 16px; align-content: center; justify-items: center; background: radial-gradient(ellipse at 50% 45%, #443326 0%, #241d18 45%, #171411 100%); }
-.loader-emblem { width: clamp(112px, 25vw, 168px); height: auto; object-fit: contain; filter: drop-shadow(0 0 14px #d6a84b88); animation: emblem-arrive .9s cubic-bezier(.2,.8,.2,1) both, emblem-glow 2.2s 1s ease-in-out infinite; }
-.loader-brand { color: #f8f1e5; text-align: center; font: 500 clamp(1.35rem,5vw,2rem)/1.1 var(--font-heading, Georgia, serif); letter-spacing: .2em; animation: brand-arrive .8s .15s both; }
-.loader-brand span { display: block; margin-top: 8px; color: #d1aa70; font: 500 .56rem/1.2 var(--font-body, sans-serif); letter-spacing: .28em; }
-.loader-orbit { width: 104px; height: 2px; margin-top: 4px; overflow: hidden; background: #ffffff20; }
-.loader-orbit::after { display: block; width: 40%; height: 100%; content: ''; background: linear-gradient(90deg,transparent,#e8c77f,transparent); animation: loader-sweep 1.1s ease-in-out infinite; }
-@keyframes emblem-arrive { from { opacity: 0; transform: scale(.72) rotate(-18deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
-@keyframes emblem-glow { 50% { filter: drop-shadow(0 0 25px #efc86daa); } }
-@keyframes brand-arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes loader-sweep { from { transform: translateX(-120%); } to { transform: translateX(270%); } }
+.sepolia-loader {
+  gap: 16px;
+  align-content: center;
+  justify-items: center;
+  background: radial-gradient(ellipse at 50% 45%, #443326 0%, #241d18 45%, #171411 100%);
+}
 
-.page-transition-screen.is-entering,
-.page-transition-screen.is-leaving {
+.loader-emblem {
+  width: clamp(112px, 25vw, 168px);
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px #d6a84b88);
+  animation: emblem-arrive .85s cubic-bezier(.2, .8, .2, 1) both, emblem-glow 2.2s .9s ease-in-out infinite;
+}
+
+.loader-brand {
+  color: #f8f1e5;
+  text-align: center;
+  font: 500 clamp(1.35rem, 5vw, 2rem)/1.1 var(--font-heading, Georgia, serif);
+  letter-spacing: .2em;
+  animation: brand-arrive .75s .12s both;
+}
+
+.loader-brand span {
+  display: block;
+  margin-top: 8px;
+  color: #d1aa70;
+  font: 500 .56rem/1.2 var(--font-body, sans-serif);
+  letter-spacing: .28em;
+}
+
+.loader-orbit {
+  width: 104px;
+  height: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+  background: #ffffff20;
+}
+
+.loader-orbit::after {
+  display: block;
+  width: 40%;
+  height: 100%;
+  content: '';
+  background: linear-gradient(90deg, transparent, #e8c77f, transparent);
+  animation: loader-sweep 1.1s ease-in-out infinite;
+}
+
+@keyframes emblem-arrive {
+  from { opacity: 0; transform: scale(.76) rotate(-14deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes emblem-glow {
+  50% { filter: drop-shadow(0 0 25px #efc86daa); }
+}
+
+@keyframes brand-arrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loader-sweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(270%); }
+}
+
+/* Active loader state (slow initial load or slow page-to-page load) */
+html.sd-show-loader .page-transition-screen,
+.page-transition-screen.is-active {
+  opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  transition: opacity .28s cubic-bezier(.22, .68, 0, 1), visibility 0s;
 }
 
-.page-transition-screen.is-entering {
-  animation: pageScreenReveal .62s .04s cubic-bezier(.22,.68,0,1) both;
+html.sd-show-loader body {
+  overflow: hidden;
 }
 
-.page-transition-screen.is-leaving {
-  opacity: 1;
-  transition: opacity .34s cubic-bezier(.22,.68,0,1), visibility 0s;
+/* Pre-paint shield for fast incoming flow so content never flashes before flowing in */
+html.sd-flow-prep body > :not(.page-transition-screen) {
+  opacity: 0 !important;
 }
 
-.page-transition-screen .page-transition-brand {
-  display: grid;
-  gap: 5px;
-  color: var(--clr-light, #fdfbf7) !important;
-  text-align: center;
-  font-family: var(--font-heading, serif);
-  font-size: clamp(2rem, 7vw, 3.6rem);
-  letter-spacing: .08em;
-  line-height: 1;
-  text-decoration: none;
-  animation: pageBrandReveal .52s .04s ease both;
+/* Directional flow transition for individual on-screen items */
+.sd-flow-item {
+  will-change: transform, opacity;
+  transition:
+    transform .46s cubic-bezier(.22, 1, .36, 1) var(--sd-delay, 0ms),
+    opacity .36s ease var(--sd-delay, 0ms) !important;
 }
 
-.page-transition-screen .page-transition-brand span {
-  color: var(--clr-accent, #c5a880);
-  font-family: var(--font-body, sans-serif);
-  font-size: .25em;
-  font-weight: 500;
-  letter-spacing: .3em;
-  text-transform: uppercase;
+/* Exit: items flow away opposite to the incoming page direction */
+.sd-flow-item.sd-flow-exit-left {
+  transform: translate3d(-72px, 0, 0) scale(.985) !important;
+  opacity: 0 !important;
+  pointer-events: none;
 }
 
-@keyframes pageScreenReveal {
-  from { opacity: 1; }
-  to { opacity: 0; }
+.sd-flow-item.sd-flow-exit-right {
+  transform: translate3d(72px, 0, 0) scale(.985) !important;
+  opacity: 0 !important;
+  pointer-events: none;
 }
 
-@keyframes pageBrandReveal {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Enter start position (no transition while positioning) */
+.sd-flow-item.sd-flow-pre-from-right {
+  transition: none !important;
+  transform: translate3d(72px, 0, 0) scale(.985) !important;
+  opacity: 0 !important;
+}
+
+.sd-flow-item.sd-flow-pre-from-left {
+  transition: none !important;
+  transform: translate3d(-72px, 0, 0) scale(.985) !important;
+  opacity: 0 !important;
+}
+
+/* Enter settle position */
+.sd-flow-item.sd-flow-enter {
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  opacity: 1 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-transition-screen,
-  .page-transition-screen.is-entering,
-  .page-transition-screen.is-leaving,
-  .page-transition-screen .page-transition-brand {
+  .loader-emblem,
+  .loader-brand,
+  .loader-orbit::after,
+  .sd-flow-item {
     animation: none !important;
     transition: none !important;
   }
-  .loader-emblem,.loader-brand,.loader-orbit::after { animation: none !important; }
+  .sd-flow-item.sd-flow-exit-left,
+  .sd-flow-item.sd-flow-exit-right,
+  .sd-flow-item.sd-flow-pre-from-right,
+  .sd-flow-item.sd-flow-pre-from-left {
+    transform: none !important;
+  }
 }
