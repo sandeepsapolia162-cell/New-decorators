@@ -18,7 +18,10 @@ const post=(url,data,method='POST')=>api(url,{method,headers:{'Content-Type':'ap
 function xhrUpload(url,blob,headers,onProgress=()=>{}){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open('POST',url);for(const [k,v]of Object.entries(headers))x.setRequestHeader(k,v);x.upload.onprogress=e=>{if(e.lengthComputable)onProgress(Math.round(e.loaded/e.total*100));};x.onload=()=>{let d={};try{d=JSON.parse(x.responseText);}catch{}x.status>=200&&x.status<300?resolve(d):reject(Error(d.error||`Upload failed (${x.status})`));};x.onerror=()=>reject(Error('Network error during upload'));x.send(blob);});}
 async function load(){
   const login=$('#login'),app=$('#app'),message=$('#message');
-  login.hidden=false;app.hidden=true;message.textContent='Checking your sign-in…';
+  // Keep an authenticated dashboard visible during in-place refreshes. This avoids
+  // the login flash when a control reloads the media data after saving.
+  const dashboardWasOpen=!app.hidden;
+  if(!dashboardWasOpen){login.hidden=false;message.textContent='Checking your sign-in…';}
   let session;
   try{session=await api('/api/admin/session');}
   catch(error){
@@ -117,7 +120,7 @@ function makeCard(item){
   if(item.type==='image')actions.append(button('Edit photo',()=>openCrop(item)));
   else if(item.source==='upload')actions.append(button('Edit video',()=>openVideoEditor(item)));
   const replace=document.createElement('label');replace.className='file-button btn btn-quiet';replace.textContent='Replace file';const file=document.createElement('input');file.type='file';file.accept=item.type==='video'?'video/*,.avi,.mov,.mkv,.m4v,.mpg,.mpeg,.3gp,.flv,.ts,.mts,.m2ts,.wmv,.asf,.ogv':'image/*';file.hidden=true;replace.append(file);file.onchange=async()=>{if(file.files[0]){if(item.type==='video')openVideoEditor(item,file.files[0]);else await replaceMedia(item,file.files[0]);}};actions.append(replace);
-  const remove=button(item.source==='static'?'Remove from gallery':'Delete',async()=>{if(confirm(item.source==='static'?'Remove this reference from the gallery? The repository image file will stay untouched.':'Delete this uploaded item permanently?')){await api(`/api/admin/media/${item.id}`,{method:'DELETE'});await load();}});remove.className='btn btn-danger';actions.append(remove);
+  const remove=button('Remove',async()=>{if(confirm('Remove this item from the gallery?')){await api(`/api/admin/media/${item.id}`,{method:'DELETE'});await load();}});remove.className='btn btn-danger';actions.append(remove);
   const badges=document.createElement('div');badges.className='item-badges';const categoryName=categories.find(c=>c.id===item.category_id)?.name||'Uncategorized';const catBadge=document.createElement('span');catBadge.className='item-badge';catBadge.textContent=categoryName;badges.append(catBadge);
   if(item.is_pinned){const badge=document.createElement('span');badge.className='item-badge';badge.textContent='Pinned';badges.append(badge);}
   if(item.is_featured){const badge=document.createElement('span');badge.className='item-badge';badge.textContent=item.type==='video'?'Home video':'Home feature';badges.append(badge);}

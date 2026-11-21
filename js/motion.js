@@ -2,20 +2,18 @@
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const screen = document.createElement('div');
-  screen.className = 'page-transition-screen';
+  screen.className = 'page-transition-screen sepolia-loader';
   screen.setAttribute('aria-hidden', 'true');
-
-  const sourceBrand = document.querySelector('.navbar .logo');
-  if (sourceBrand) {
-    const brand = sourceBrand.cloneNode(true);
-    brand.classList.add('page-transition-brand');
-    brand.setAttribute('tabindex', '-1');
-    brand.querySelectorAll('a').forEach(link => {
-      link.removeAttribute('href');
-      link.setAttribute('tabindex', '-1');
-    });
-    screen.append(brand);
-  }
+  const emblem = document.createElement('img');
+  emblem.className = 'loader-emblem';
+  emblem.src = '/images/favicon.png';
+  emblem.alt = '';
+  const brand = document.createElement('div');
+  brand.className = 'loader-brand';
+  brand.innerHTML = 'SEPOLIA<span>DECORATORS &amp; CATERERS</span>';
+  const line = document.createElement('div');
+  line.className = 'loader-orbit';
+  screen.append(emblem, brand, line);
   document.body.append(screen);
 
   const revealPage = () => {
