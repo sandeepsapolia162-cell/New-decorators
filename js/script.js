@@ -926,6 +926,20 @@ window.addEventListener('pageshow', (event) => {
     document.body.classList.add('page-loaded');
 });
 
+document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const target = this.href;
+        if (this.hostname === window.location.hostname &&
+            target.indexOf('#') === -1 &&
+            this.target !== '_blank' &&
+            !this.hasAttribute('download')) {
+            e.preventDefault();
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => { window.location.href = target; }, 500);
+        }
+    });
+});
+
 // ==========================================
 // AUTO-CLICK DEFAULT FILTER ON LOAD
 // ==========================================
